@@ -27,6 +27,7 @@ library(lmerTest)
 library(nlme)
 library(knitr)
 library(emmeans)
+library(DHARMa)
 if(!require(multcompView)) install.packages("multcompView")
 if(!require(multcomp)) install.packages("multcomp")
 options(emmeans= list(emmeans = list(infer = c(TRUE, F)),
@@ -124,3 +125,22 @@ plot(bathy_data, deep = -2000, shallow = -2000, lwd = 0.4, col = "black",drawlab
 points(datos$lon, datos$lat,pch = 20, cex = 1, col = 'red')
 
 dev.off()
+
+####MODELO####
+library(glmmTMB)
+modelo<- glm(
+  riqueza ~ Chl + SSS + SST + POC + bbp + gamma + source,
+  family = poisson,
+  data = datos
+)
+
+# Resumen del modelo
+summary(modelo)
+
+car::vif(modelo)
+
+testDispersion(modelo, type = "PearsonChisq")
+sim <- simulateResiduals(fittedMod = modelo,
+                         plot = T)
+plotResiduals(sim, datos$source)
+testDispersion(modelo, type = "DHARMa")
