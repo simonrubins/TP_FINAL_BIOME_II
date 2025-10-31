@@ -1,3 +1,8 @@
+#####LIBRERIAS####
+install.packages("terra")
+install.packages("marmap")
+library(terra)
+library(marmap)
 library(pastecs)
 library(patchwork)
 library(ggplot2)
@@ -26,11 +31,13 @@ if(!require(multcompView)) install.packages("multcompView")
 if(!require(multcomp)) install.packages("multcomp")
 options(emmeans= list(emmeans = list(infer = c(TRUE, F)),
                       contrast = list(infer = c(TRUE, TRUE))))
-
+####CARGAR DATOS####
 datos<-read.csv("complete_data.csv", header=T)
 datos$source<-as.factor(datos$source)
 summary(datos)
 
+
+#### GRAFICOS EXPLORATORIOS####
 plot_chl <- ggplot(datos, aes(x = Chl, y = riqueza, colour = source)) +
   xlab("Chl") +
   ylab("Riqueza") +
@@ -95,3 +102,25 @@ plot_bbp + theme(axis.text.x = element_text(size=12),
                  axis.text.y = element_text(size=12), 
                  axis.title.x = element_text(size = 14), 
                  axis.title.y = element_text(size = 14))
+
+####MAPA ESTACIONES####
+bathy_data<-getNOAA.bathy(lon1=-70, lon2 = -52, lat1 = -55, lat2 = -45, resolution = 1 )
+map_rast <- rast("Temperature.nc")
+map_rast_mean<- mean(map_rast)
+pdf("D:/Carrera/Trabajos Finales/Biometría II/statation_map.pdf")
+
+plot(map_rast_mean,
+     col = "lightblue",
+     main = "",
+     xlab = "Longitude", ylab = "Latitude",
+     xlim=c(-70, -52), ylim =c(-55,-45),
+     legend= FALSE
+)
+
+# Add isobaths
+plot(bathy_data, deep = 0, shallow = 0, lwd=0.6, col="black", add=T)
+plot(bathy_data, deep = -200, shallow = -200, lwd = 0.4, col = "black",drawlabels=T, add = TRUE)
+plot(bathy_data, deep = -2000, shallow = -2000, lwd = 0.4, col = "black",drawlabels=T, add = TRUE)
+points(datos$lon, datos$lat,pch = 20, cex = 1, col = 'red')
+
+dev.off()
