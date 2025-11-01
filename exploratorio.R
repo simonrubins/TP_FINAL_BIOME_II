@@ -36,6 +36,14 @@ options(emmeans= list(emmeans = list(infer = c(TRUE, F)),
 datos<-read.csv("complete_data.csv", header=T)
 datos$source<-as.factor(datos$source)
 summary(datos)
+names(datos)
+summary(datos$source)
+
+# Cambiamos los nombres de los frentes
+library(dplyr)
+datos$source <- recode_factor(datos$source,
+                              "bloom" = "transitorio",
+                              "talud" = "estable")
 
 
 #### GRAFICOS EXPLORATORIOS####
@@ -139,8 +147,27 @@ summary(modelo)
 
 car::vif(modelo)
 
+# Test dispersión y simulación de residuos con DHARMa
 testDispersion(modelo, type = "PearsonChisq")
-sim <- simulateResiduals(fittedMod = modelo,
-                         plot = T)
+
+### Sección tamaño de letra
+# Guardar configuración original
+op <- par()
+# Configurar tamaño de letra
+par(cex.main = 2,    # Título principal
+    cex.lab = 1.3,     # Etiquetas de ejes
+    cex.axis = 1.3)    # Números en ejes
+### fin Sección tamaño de letra
+
+# 1. Generar los residuales
+sim <- simulateResiduals(fittedMod = modelo, plot = T)
+# 2. genero  plotResiduals y lo guardo en p
 plotResiduals(sim, datos$source)
+
+# Restaurar configuración original (tamaño letra)
+par(op)
+
+
+# Gráfico de cuartiles
 testDispersion(modelo, type = "DHARMa")
+
