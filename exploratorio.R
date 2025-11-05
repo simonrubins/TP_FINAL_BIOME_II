@@ -28,6 +28,7 @@ library(nlme)
 library(knitr)
 library(emmeans)
 library(DHARMa)
+library(geosphere)
 if(!require(multcompView)) install.packages("multcompView")
 if(!require(multcomp)) install.packages("multcomp")
 options(emmeans= list(emmeans = list(infer = c(TRUE, F)),
@@ -170,4 +171,123 @@ par(op)
 
 # Gráfico de cuartiles
 testDispersion(modelo, type = "DHARMa")
+
+####DISTANCIA####
+# Coordenadas iniciales por localidad
+ref_points <- data.frame(
+  source = c("bloom", "talud"),
+  ref_lat = c(-48.2656, -45.6659),
+  ref_lon = c(-63.7595, -59.7381)
+)
+
+# Calcular distancia al punto inicial de cada localidad
+datos_distancia <- datos %>%
+  left_join(ref_points, by = "source") %>%
+  mutate(
+    dist_m = distHaversine(
+      p1 = cbind(ref_lon, ref_lat),
+      p2 = cbind(lon, lat)
+    ),
+    dist_km = dist_m / 1000
+  )
+plot_distancia <- ggplot(datos_distancia, aes(x = dist_m, y = riqueza, colour = source)) +
+  xlab("Distancia") +
+  ylab("Riqueza") +
+  geom_point(size = 4, shape = 21) + 
+  theme_bw()
+plot_distancia+ theme(axis.text.x = element_text(size=12),
+                   axis.text.y = element_text(size=12), 
+                   axis.title.x = element_text(size = 14), 
+                   axis.title.y = element_text(size = 14))
+plot(datos_distancia)
+
+ggpairs(datos_distancia[4:11], aes(colour = source))
+?ggpairs
+vars_num <- datos %>%
+  select(where(is.numeric)) %>%
+  select(-lon, -lat, -dist_km) %>%
+  colnames()
+
+# Calcular media y desviación estándar por source
+resumen <- datos %>%
+  group_by(source) %>%
+  summarise(across(all_of(vars_num),
+                   list(mean = mean, sd = sd),
+                   .names = "{.col}_{.fn}"),
+            .groups = "drop")
+
+# Pasar a formato largo para ggplot
+resumen_long <- resumen %>%
+  pivot_longer(
+    cols = -source,
+    names_to = c("variable", ".value"),
+    names_sep = "_"
+  )
+
+# Graficar
+ggplot(resumen_long, aes(x = source, y = mean, fill = source)) +
+  geom_col(position = position_dodge(width = 0.8), width = 0.7) +
+  geom_errorbar(
+    aes(ymin = mean - sd, ymax = mean + sd),
+    width = 0.2,
+    position = position_dodge(width = 0.8)
+  ) +
+  facet_wrap(~ variable, scales = "free_y") +
+  theme_minimal(base_size = 13) +
+  labs(
+    x = "Localidad",
+    y = "Media ± Desvío estándar",
+    fill = "Source"
+  ) +
+  theme(
+    strip.text = element_text(face = "bold"),
+    legend.position = "none"
+  )
+?nlme
+
+#MODELO GEE####
+
+install.packages("geepack")
+library(geepack)
+datos_distancia <- datos_distancia %>%
+  arrange(object_id)
+
+m0<-geeglm(formula= riqueza~Chl+SSS+source+gamma+bbp+POC+SST, family = poisson, data=datos_distancia,id=source,corstr = "ar1")
+
+vif(m0)
+summary(m0)
+testDispersion(m0, type = "PearsonChisq")
+
+### Sección tamaño de letra
+# Guardar configuración original
+op <- par()
+# Configurar tamaño de letra
+par(cex.main = 2,    # Título principal
+    cex.lab = 1.3,     # Etiquetas de ejes
+    cex.axis = 1.3)    # Números en ejes
+### fin Sección tamaño de letra
+
+# 1. Generar los residuales
+sim <- simulateResiduals(fittedMod = m0, plot = T)
+summary(m0)
+
+#PLAN B: IR A UNA NORMAL####
+m2 <- nlme(model = riqueza ~ Chl + SSS + source + gamma + bbp + POC + SST,data = datos_distancia,correlation = corCAR1(form = ~ dist_km))
+
+####MODELO 3#######
+m3<-gls(model = riqueza ~ Chl + SSS + source + gamma + bbp + POC + SST,data = datos_distancia, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist_km|source))
+
+plot(m3)
+check_model(m3)
+r<-resid(m3, type="pearson")
+qqPlot(r)
+summary(m3)
+shapiro.test(r)
+hist(r)
+
+#NOS QUEDAMOS CON EL M3 CON VARIDENT y CORCAR1. 
+AIC(m3)
+m4<-gls(model = riqueza ~ Chl + SSS + source + gamma + bbp+ SST,data = datos_distancia, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist_km|source))
+m5<-gls(model = riqueza ~ Chl + SSS+source + gamma+bbp+SST,data = datos_distancia, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist_km|source))
+AIC(m3,m4,m5) #EL m4 Es el de menor AIC, HASTA PROBANDO SACANDO MÁS VARIABLES
 
