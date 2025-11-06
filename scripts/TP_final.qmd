@@ -1,0 +1,226 @@
+---
+title: "Estudio de alta frecuencia de la riqueza microbiana entre 2 tipos de frentes oceanográficos"
+author: "Nicolás, Simón, Nicole, Gonzalo, Martina"
+format: html
+editor: visual
+theme: cerulean
+output-dir: "asdasdasdasd"
+---
+
+## 
+
+```{r}
+#| include: false
+library(nlme)
+library(geepack)
+library(marmap)
+library(dplyr)
+library(geosphere) # Para pasar lat y long a distancias
+library(ggplot2)
+library(tidyr)
+library(car) 
+library(DHARMa)
+```
+
+## Contexto
+
+Estudiar comunidad del plancton microbiano en el atlántico Sudoccidental Sur. Especificamente compar la riqueza del frente Estable con el frente Transitorio.
+
+## Analisis Exploratorio Datos
+
+```{r}
+datos<-read.csv("../datos/complete_data.csv", header=T)
+summary(datos)
+
+####DISTANCIA####
+# Coordenadas iniciales por localidad
+ref_points <- data.frame(
+  source = c("bloom", "talud"),
+  ref_lat = c(-48.2656, -45.6659),
+  ref_lon = c(-63.7595, -59.7381)
+)
+
+# Calcular distancia al punto inicial de cada localidad
+datos <- datos %>%
+  left_join(ref_points, by = "source") %>%
+  mutate(
+    dist_m = distHaversine(
+      p1 = cbind(ref_lon, ref_lat),
+      p2 = cbind(lon, lat)
+    ),
+    dist = dist_m / 1000
+  )
+
+datos = datos[, -c(2,3,12:14 )]
+```
+
+Cambiamos los nombres a los frentes
+
+```{r}
+
+datos$source <- recode_factor(datos$source,
+                              "bloom" = "transitorio",
+                              "talud" = "estable")
+
+```
+
+### Analiticamente
+
+```{r}
+resumen_frente <- datos %>%
+  group_by(source) %>%
+  summarize(
+    n = n(),
+    riqueza = mean(riqueza),
+    salinidad = mean(SSS),
+    chl = mean(Chl),
+    DE_chl= sd(Chl) , 
+    POC = mean(POC),
+    gamma = mean(gamma),
+    SST = mean(SST),
+    bbp = mean(bbp)
+  )
+knitr :: kable(resumen_frente,
+               
+               caption = "Medidas resumen por frente ") 
+
+```
+
+### Graficamente
+
+```{r}
+spahettiPlot = function (var, nombre){
+  
+ggplot(data = datos, aes(x = dist,
+                         y = {{var}},
+                         colour = source,
+                         )) +
+  labs(title = paste("Spaghetti-plot " , nombre , " en distancia"),
+       x = "Distancia (km)",
+       y = nombre) +
+  geom_point() +
+  geom_line() +
+  facet_grid(. ~source ) +
+  theme_bw()
+}
+```
+
+#### Clorofila
+
+```{r}
+
+ggplot(datos, aes(x=source, y=Chl)) +
+        geom_boxplot(aes(group =source ,  color=source), color="black") +        # outlier.shape = NA
+        theme_bw()+
+        geom_jitter(alpha=0.3, size=2,aes(color=source), 
+                    position = position_jitter(width = .2))+
+        theme(legend.position="top", 
+              legend.text=element_text(size = 12),
+              legend.title = element_text(size=12, face="bold")) +
+        ylab("Chl")+xlab("Frente") 
+```
+
+```{r}
+spahettiPlot(Chl , "Clorofila")
+spahettiPlot(riqueza , "riqueza")
+spahettiPlot(POC , "POC")
+spahettiPlot(gamma , "gamma")
+spahettiPlot(SST , "SST")
+spahettiPlot(SSS , "SSS")
+spahettiPlot(bbp , "bbp")
+
+
+```
+
+```{r}
+
+
+```
+
+### Hipótesis
+
+Debido a las caracterticas de cada comunidad , se espera que la riqueza de especies sea distinta en cada zona.
+
+### Predicción
+
+El frente Estable se espera encontrar menor riqueza de especies ya las condiciones ambientales se mantienen estables en el tiempo. Por el otro lado, el Frente transitorio al variar sus condiciones ambientales se espera una mayor cantidad de riqueza.
+
+Unidad de muestreo: Cada 5 ml de agua de la trayectoria del barco.
+
+Variables **Explcatorias:** (Cuantitativas continuas y distribución aleatoria, nomal)
+
+-   SSS (UPS)
+
+-   SST (°C)
+
+-   Tamaño de particulas
+
+-   bbp (mg/m3)
+
+-   Clorofila (mg/m3)
+
+-   POC (mg/m3)
+
+Variable efectos aleatorios:
+
+-   Distancia : La distancia se puede tomar como una variable de efectos aleatorios, pero como no nos interesa en nuestra hipotesis, se decidió usar un análisis **marginal** con una matriz de correlación donde la correlación disminuye a mayores distancias.
+
+Variable **Respuesta:**
+
+-   Riqueza ( Numero Sps distintas ) / 5 ml de agua . Cota inferior ( 0 , + ∞) \~ Distribución Poisson
+
+Replicas: 25 Para frente estable, 50 para transitorio
+
+### Conclución
+
+Abordaremos un diseño de mididas repetidas en el **espacio**, donde modelaremos la falta de independencia de los datos con una matriz de covarianzas. Es un modelo generalizado lineal ya que la VR tiene una distribución Poisson y se usan medidas repetidas. (GEE)
+
+Recordar: GEE no es un método basado en verosimilitud (no hay AIC/BIC) No se puede usar tests de verosimilitud. Solo tests de Wald.
+
+## Modelo Inicial GEE
+
+$$
+ \ln( E ( \frac {Riqueza}{5 ~ ml ~ Agua}))_i = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST_i +  \beta_4 bbp_i  + \beta_5 Clorofila_i  + \beta_6 POC_i + \beta_7 Estable_i + \beta_8 Distancia_i 
+$$
+
+Como en GEE no existe una matriz de correación continua o de distancias, asumimos una Autroregresiva.
+
+```{r}
+library(geepack)
+
+datos <- datos %>%
+  arrange(object_id)
+
+m0<-geeglm(formula= riqueza~Chl+SSS+source+gamma+bbp+POC+SST, family = poisson, data=datos,id=source,corstr = "ar1")
+
+```
+
+### Supuestos
+
+Dispersion
+
+```{r}
+vif(m0)
+testDispersion(m0, type = "PearsonChisq")
+sim <- simulateResiduals(fittedMod = m0, plot = T)
+
+summary(m0)
+```
+
+Se ve subdispersion y además el summary da cualquier cosa
+
+# Plan B
+
+$$
+ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST_i +  \beta_4 bbp_i  + \beta_5 Clorofila_i  + \beta_6 POC_i + \beta_7 Estable_i + \beta_8 Distancia_i + \epsilon_i
+\\ \epsilon_i \sim Normal(0,\sigma^2_{frente})
+\\ i : 1 -75
+$$
+
+debido que gee no incorpora las distribuciones que corrigen la **subdispersion**.
+
+Asumimos que la variable resupesta se aproxima a una distribucion normal ya que la experanza \> 8.
+
+Lugeo Probamos modelar la varianza ya que en Poisson \> media \> varianza, asumiimos un varPower o varExp. Sin embargo como hay subDispersion
+
+Sacamos el POC, particulas
