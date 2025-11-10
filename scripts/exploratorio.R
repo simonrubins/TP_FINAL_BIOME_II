@@ -34,7 +34,8 @@ if(!require(multcomp)) install.packages("multcomp")
 options(emmeans= list(emmeans = list(infer = c(TRUE, F)),
                       contrast = list(infer = c(TRUE, TRUE))))
 ####CARGAR DATOS####
-datos<-read.csv("complete_data.csv", header=T)
+getwd()
+datos<-read.csv("D:/Carrera/Trabajos Finales/Biometría II/TP_FINAL_BIOME_II/datos/complete_data.csv", header=T)
 datos$source<-as.factor(datos$source)
 summary(datos)
 names(datos)
@@ -190,7 +191,7 @@ datos_distancia <- datos %>%
     ),
     dist_km = dist_m / 1000
   )
-plot_distancia <- ggplot(datos_distancia, aes(x = dist_m, y = riqueza, colour = source)) +
+  plot_distancia <- ggplot(datos_distancia, aes(x = dist_m, y = riqueza, colour = source)) +
   xlab("Distancia") +
   ylab("Riqueza") +
   geom_point(size = 4, shape = 21) + 
@@ -280,14 +281,85 @@ m3<-gls(model = riqueza ~ Chl + SSS + source + gamma + bbp + POC + SST,data = da
 plot(m3)
 check_model(m3)
 r<-resid(m3, type="pearson")
-qqPlot(r)
+plot(predict(m3),r)
+car::qqPlot(r)
 summary(m3)
 shapiro.test(r)
 hist(r)
-
+####CHEQUEO MODELOS DE A UNA VARIABLE####
+#SALINIDAD
+modelo_SSS<-gls(model = riqueza ~ SSS,data = datos_distancia, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist_km|source))
+summary(modelo_SSS)
+plot(modelo_SSS)
+check_model(modelo_SSS)
+r<-resid(modelo_SSS, type="pearson")
+car::qqPlot(r)
+shapiro.test(r)
+hist(r)
 #NOS QUEDAMOS CON EL M3 CON VARIDENT y CORCAR1. 
 AIC(m3)
+car::Anova(m3)
 m4<-gls(model = riqueza ~ Chl + SSS + source + gamma + bbp+ SST,data = datos_distancia, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist_km|source))
-m5<-gls(model = riqueza ~ Chl + SSS+source + gamma+bbp+SST,data = datos_distancia, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist_km|source))
+summary(m4)
+m5<-gls(model = riqueza ~ Chl + SSS+source + gamma+bbp,data = datos_distancia, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist_km|source))
 AIC(m3,m4,m5) #EL m4 Es el de menor AIC, HASTA PROBANDO SACANDO MÁS VARIABLES
+
+####PLANTEO MODELOS CON INTERACCIÓN####
+m4_con_int<-gls(model = riqueza ~ Chl+(SSS+ gamma + bbp+ SST) * source ,data = datos_distancia, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist_km|source)) #NOS QUEDAMOS CON ESTE MODELO POR AHORA AIC=327
+AIC(m4_con_int)
+BIC()
+anova(m4, m4_con_int)
+plot(m4_con_int)
+
+check_model(m4_con_int)
+r<-resid(m4_con_int, type="pearson")
+qqPlot(r)
+plot
+summary(m4_con_int)
+shapiro.test(r)
+hist(r)
+
+
+
+m5_sin_int<-gls(model = riqueza ~ Chl +gamma+SST+SSS+bbp+source,data = datos_distancia, weights = varIdent(form = ~1|source),correlation = corLin(form = ~ dist_km|source))
+m5_con_int<-gls(model = riqueza ~ (Chl +gamma+SST+SSS+bbp)*source,data = datos_distancia, weights = varIdent(form = ~1|source),correlation = corLin(form = ~ dist_km|source))
+?gls
+anova(m4, m5_sin_int, m4_con_int, m5_con_int)
+AIC(m5_con_int)
+summary(m5_con_int)
+
+install.packages("randomForest")  # Solo la primera vez
+library(randomForest)
+# Convertir 'source' a factor si es categórica
+datos_distancia$source <- as.factor(datos_distancia$source)
+
+# Entrenamiento del modelo Random Forest
+set.seed(123)  # Para reproducibilidad
+rf_model <- randomForest(
+  riqueza ~ SSS + gamma + bbp + SST + source,
+  data = datos_distancia,
+  ntree = 500,      # número de árboles
+  mtry = 3,         # número de variables seleccionadas por división
+  importance = TRUE # para medir la importancia de las variables
+)
+
+# Ver resumen del modelo
+print(rf_model)
+
+
+
+# Mostrar importancia
+importance(rf_model)
+
+# Visualizar
+varImpPlot(rf_model)
+
+pred_rf <- predict(rf_model, newdata = datos_distancia)
+# Comparar con los valores observados
+plot(datos_distancia$riqueza, pred_rf,
+     xlab = "Observado", ylab = "Predicho", main = "Random Forest")
+abline(0, 1, col = "red")
+
+####HACEMOS MODELOS DE A UNA VARIABLE####
+
 
