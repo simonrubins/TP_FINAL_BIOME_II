@@ -221,6 +221,110 @@ debido que gee no incorpora las distribuciones que corrigen la **subdispersion**
 
 Asumimos que la variable resupesta se aproxima a una distribucion normal ya que la experanza \> 8.
 
-Lugeo Probamos modelar la varianza ya que en Poisson \> media \> varianza, asumiimos un varPower o varExp. Sin embargo como hay subDispersion
+Lugeo Probamos modelar la varianza ya que en Poisson \> media \> varianza, asumiimos un varPower o varExp. Mejor modelo termino siendo VarIdent con una varianza para cada source.
 
 Sacamos el POC, particulas
+
+#### Seleccion de modelos
+
+```{r}
+
+
+m_Nulo = gls(model = riqueza ~ 1 ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_Source = gls(model = riqueza ~ source ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_SSS = gls(model = riqueza ~ SSS   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_SSS_S = gls(model = riqueza ~ SSS *  source  ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_Clo  = gls(model = riqueza ~ Chl    ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_Clo_S  = gls(model = riqueza ~ Chl * source   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_POC = gls(model = riqueza ~ POC    ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_POC_S = gls(model = riqueza ~ POC * source   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_bbp = gls(model = riqueza ~ bbp    ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_bbp_S = gls(model = riqueza ~ bbp * source   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_dist =gls(model = riqueza ~ dist    ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_dist_S =gls(model = riqueza ~ dist  * source   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_dist_Sxbbp =gls(model = riqueza ~ dist  * source * bbp   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_distxbbp =gls(model = riqueza ~ dist   * bbp + source  ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_gamma=gls(model = riqueza ~ gamma   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_gamma_S=gls(model = riqueza ~ gamma * source  ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_SSS_Sxbbp =gls(model = riqueza ~ dist  * source * SSS   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_SSS_Sxbbp =gls(model = riqueza ~ bbp  * source * SSS   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+
+
+
+summary(m_SSS)
+summary(m_gamma_S)
+anova(m_gamma_S)
+
+
+summary(m_SSS_Sxbbp)
+
+
+```
+
+```{r}
+
+residuals = residuals(m_SSS_S, type = "pearson")
+plot( predict(m_SSS_S) , residuals)
+```
+
+```{r}
+m_interaccionTotal =gls(model = riqueza ~ bbp  * source * SSS  * SST  * gamma    ,data = datos, weights = varIdent(form = ~1|source) ,correlation = corCAR1(form = ~ dist|source))
+
+AIC(m_Nulo, m_Source , m_SSS , m_Clo , m_Clo_S , m_SSS_S,m_POC , m_POC_S  ,m_bbp, m_bbp_S ,m_dist , m_dist_S , m_dist_Sxbbp, m_distxbbp,m_gamma , m_gamma_S, m_SSS_Sxbbp , m_interaccionTotal)
+BIC(m_Nulo, m_Source , m_SSS , m_Clo , m_Clo_S , m_SSS_S,m_POC , m_POC_S  ,m_bbp, m_bbp_S ,m_dist , m_dist_S , m_dist_Sxbbp, m_distxbbp , m_gamma , m_gamma_S, m_SSS_Sxbbp, m_interaccionTotal)
+summary(m_interaccionTotal)
+
+```
+
+Linealidad
+
+```{r}
+
+ggplot(datos, aes(x=riqueza, y=Chl , group = source , color = source)) + 
+  geom_point(size=3,  shape=19 ) +  
+  geom_smooth(method=lm, se=F, fullrange=F, size=0.5)+ 
+  xlab("Riqueza") +  ylab("Chl") 
+
+ggplot(datos, aes(x=riqueza, y=bbp , group = source , color = source)) + 
+  geom_point(size=3,  shape=19 ) +  
+  geom_smooth(method=lm, se=F, fullrange=F, size=0.5)+ 
+  xlab("Riqueza") +  ylab("bbp") 
+
+ggplot(datos, aes(x=gamma, y=bbp , group = source , color = source)) + 
+  geom_point(size=3,  shape=19 ) +  
+  geom_smooth(method=lm, se=F, fullrange=F, size=0.5)+ 
+  xlab("Riqueza") +  ylab("gamma") 
+
+```
+
+\
+
+```{r}
+modelo_N_VarIdent<-gls(model = riqueza ~ Chl + SSS + source + gamma + bbp + POC + SST,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+modelo_N_VarPower = update(modelo_N_VarIdent,  weights = varPower())
+```
+
+```{r}
+modelo_N_VarIdent<-gls(model = riqueza ~ Chl + SSS + source + gamma + bbp + POC + SST,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+modelo_N_VarPower = update(modelo_N_VarIdent,  weights = varPower())
+```
