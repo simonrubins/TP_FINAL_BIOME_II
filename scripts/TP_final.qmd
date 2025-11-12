@@ -389,6 +389,8 @@ m_Chl2 = gls(model = riqueza ~ poly(Chl, 2)   ,data = datos, weights = varIdent(
 
 m_Chl3 = gls(model = riqueza ~ poly(Chl, 3)   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
 
+m_Chl3ySSS2 = gls(model = riqueza ~ poly(Chl, 3) + poly(SSS , 2)  ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
 m_Chl3xSSS2 = gls(model = riqueza ~ poly(Chl, 3) * poly(SSS , 2)  ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
 
 m_ChlxSSS = gls(model = riqueza ~ Chl * SSS ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
@@ -397,7 +399,7 @@ m_gamma2 = gls(model = riqueza ~ poly(gamma, 2)   ,data = datos, weights = varId
 
 m_gamma3 = gls(model = riqueza ~ poly(gamma, 3)   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
 
-m_SSS3xgamma = gls(model = riqueza ~ poly(SSS, 2) * gamma   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+m_SSS2xgamma = gls(model = riqueza ~ poly(SSS, 2) * gamma   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
 
 m_SSSxgamma = gls(model = riqueza ~ SSS * gamma   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
 
@@ -412,10 +414,11 @@ modelos_sinSource <- list(
   "Chl^2" = m_Chl2,
   "Chl^3" = m_Chl3,
   "Chl3^2 * SSS^2" = m_Chl3xSSS2,
+  "m_Chl3 + SSS2" = m_Chl3ySSS2,
   "Chl * SSS" = m_ChlxSSS,
   "gamma^2" = m_gamma2,
   "gamma^3" = m_gamma3,
-  "SSS3 * gamma" = m_SSS3xgamma,
+  "SSS2 * gamma" = m_SSS2xgamma,
   "m_SSSxgamma" = m_SSSxgamma
 
 )
@@ -475,6 +478,8 @@ model_names <- names(modelos_sinSource)
 for (current_name in model_names) {
   
   m <- modelos_sinSource[[current_name]]
+  
+  acf(resid(m, type="normalized"), main=current_name)
     
   r = residuals(m , type = "pearson")
   predichos = predict(m)
@@ -488,7 +493,65 @@ for (current_name in model_names) {
 ```
 
 ```{r}
-summary(m_bbp_clo_S)
-summary(m_SSS_Sxbbp)
-summary(m_bbp_SSSxsource)
+summary(m_Chl3xSSS2)
+Anova(m_Chl3xSSS2)
+```
+
+```{r}
+library(ggeffects)
+
+str(datos)
+
+summary(datos)
+
+datos$riqueza = as.numeric(datos$riqueza)
+modelo_final =   gls(model = riqueza ~ scale(Chl)+ I(scale(Chl)^2) + I(scale(Chl)^3) +
+             scale(SSS) + I(scale(SSS)^2) +
+             scale(Chl):scale(SSS) ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source) )
+  
+  
+summary(m_Chl3xSSS2)
+summary(modelo_final)
+
+pred_salinidad <- ggpredict(update(modelo_final,correlation = NULL), terms = c("SSS [all]", "Chl [5,18]"))
+plot(pred_salinidad)
+
+pred_salinidad <- ggpredict(update(modelo_final,correlation = NULL), terms = c("SSS [all]", "Chl [5,18]"))
+plot(pred_salinidad)
+
+pred_Chl <- ggpredict(update(modelo_final,correlation = NULL), terms = c( "Chl [all]", "SSS [33.2,33.9]"))
+plot(pred_Chl)
+
+
+pred_salinidad <- ggpredict(update(m_Chl3ySSS2,correlation = NULL), terms = c("SSS [all]", "Chl [5,18]"))
+plot(pred_salinidad)
+
+
+
+linealidadPlot = function (var, nombre){
+  
+ggplot(datos, aes(x=SSS, y= Chl)) + 
+  geom_point(  size=3,  shape=19 ) +  
+  xlab( "SSS" ) +  ylab("Chl") 
+}
+
+ggplot(datos, aes(x=SSS, y= gamma)) + 
+  geom_point(  size=3,  shape=19 ) +  
+  xlab( "SSS" ) +  ylab("gamma") 
+}
+  
+  ggplot(datos, aes(x=SSS, y= bbp)) + 
+  geom_point(  size=3,  shape=19 ) +  
+  xlab( "SSS" ) +  ylab("bbp") 
+}
+  
+ggplot(datos, aes(x=SSS, y= POC)) + 
+  geom_point(  size=3,  shape=19 ) +  
+  xlab( "SSS" ) +  ylab("bbp") 
+}
+  
+ggplot(datos, aes(x=SSS, y= POC)) + 
+  geom_point(  size=3,  shape=19 ) +  
+  xlab( "SSS" ) +  ylab("bbp") 
+}
 ```
