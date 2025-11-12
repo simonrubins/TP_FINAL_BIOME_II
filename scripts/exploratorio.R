@@ -135,6 +135,79 @@ plot(bathy_data, deep = -2000, shallow = -2000, lwd = 0.4, col = "black",drawlab
 points(datos$lon, datos$lat,pch = 20, cex = 1, col = 'red')
 
 dev.off()
+####GRÁFICO EXPLORATORIO####
+# Paquetes
+
+library(tidyr)
+library(patchwork) # opcional, para combinar gráficos
+
+# Suponiendo que tu data.frame se llama:
+datos <- datos_distancia
+
+# Variables predictoras (ajustá según tu modelo)
+vars_cont <- c("Chl", "SSS", "SST", "POC", "bbp", "gamma")
+var_cat <- "source"
+
+# 1️⃣ Gráficos individuales para las variables continuas
+plots_cont <- lapply(vars_cont, function(var) {
+  ggplot(datos, aes_string(x = var, y = "riqueza")) +
+    geom_point(alpha = 0.6, size = 2, color = "steelblue") +
+    geom_smooth(method = "lm", se = TRUE, color = "darkred", linewidth = 0.8) +
+    theme_minimal(base_size = 13) +
+    labs(
+      x = var,
+      y = "Riqueza",
+      title = paste("Riqueza vs", var)
+    )
+})
+
+# 2️⃣ Gráfico para la variable categórica
+plot_cat <- ggplot(datos, aes_string(x = var_cat, y = "riqueza", fill = var_cat)) +
+  geom_boxplot(alpha = 0.7) +
+  geom_jitter(width = 0.2, alpha = 0.5, color = "gray40") +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "none") +
+  labs(
+    x = var_cat,
+    y = "Riqueza",
+    title = paste("Riqueza por", var_cat)
+  )
+
+# 3️⃣ Mostrar los gráficos en conjunto
+# (podés ajustarlo según cuántas variables tengas)
+combined_plot <- wrap_plots(c(plots_cont, list(plot_cat)), ncol = 3)
+combined_plot
+
+#SEPARADO POR SOURCE
+# 1️⃣ Gráficos para las variables continuas, con color por 'source'
+plots_cont <- lapply(vars_cont, function(var) {
+  ggplot(datos, aes_string(x = var, y = "riqueza", color = var_cat)) +
+    geom_point(alpha = 0.7, size = 2) +
+    geom_smooth(method = "lm", se = FALSE, linewidth = 0.8) +
+    theme_minimal(base_size = 13) +
+    labs(
+      x = var,
+      y = "Riqueza",
+      title = paste("Riqueza vs", var)
+    ) +
+    theme(legend.position = "bottom")
+})
+
+# 2️⃣ Boxplot para la variable categórica 'source'
+plot_cat <- ggplot(datos, aes_string(x = var_cat, y = "riqueza", fill = var_cat)) +
+  geom_boxplot(alpha = 0.7) +
+  geom_jitter(width = 0.2, alpha = 0.5, color = "gray40") +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "none") +
+  labs(
+    x = var_cat,
+    y = "Riqueza",
+    title = paste("Riqueza por", var_cat)
+  )
+
+# 3️⃣ Combinar todos los gráficos en una grilla
+combined_plot <- wrap_plots(c(plots_cont, list(plot_cat)), ncol = 3)
+combined_plot
 
 ####MODELO####
 library(glmmTMB)
