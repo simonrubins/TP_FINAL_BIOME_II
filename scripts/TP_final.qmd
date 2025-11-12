@@ -142,7 +142,7 @@ linealidadPlot = function (var, nombre){
 ggplot(datos, aes(x={{var}}, y= riqueza,group = source , color = source)) + 
   geom_point(  size=3,  shape=19 ) +  
   geom_smooth(method=lm, se=F, fullrange=F, size=0.5)+ 
-  xlab("Riqueza") +  ylab(nombre) 
+  xlab( nombre ) +  ylab("Riqueza") 
 }
 
 linealidadPlot(Chl,"Chl")
@@ -334,15 +334,11 @@ bic_values <- sapply(modelos, BIC)
 rse_values <- sapply(modelos, sigma)
 phi_values <- sapply(modelos, function(m) {
   
-  cor_struct <- m$modelStruct$corStruct 
+  # Get the correlation structure
+  cor_struct <- coef(m$modelStruct$corStruct, unconstrained = FALSE)
   
-  if (is.null(cor_struct)) {
-    return(NA) 
-  } else {
-    # Use unname() to remove the "Phi" name from the value
-    return(unname(coef(cor_struct, unconstrained = FALSE)))
-  }
 })
+
 p_value_last_coef <- sapply(modelos, function(m) {
   
   # Get the coefficient table from the summary
@@ -377,9 +373,118 @@ kable(results_table,
 ```{r}
 residuals = residuals(m_SSS_S, type = "pearson")
 plot( predict(m_SSS_S) , residuals)
+
 ```
 
-```         
+#### Comparaciones Sin Source
+
+```{r}
+
+
+m_SSS2 = gls(model = riqueza ~ poly(SSS, 2)   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_SSS3 = gls(model = riqueza ~ poly(SSS, 3)   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_Chl2 = gls(model = riqueza ~ poly(Chl, 2)   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_Chl3 = gls(model = riqueza ~ poly(Chl, 3)   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_Chl3xSSS2 = gls(model = riqueza ~ poly(Chl, 3) * poly(SSS , 2)  ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_ChlxSSS = gls(model = riqueza ~ Chl * SSS ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_gamma2 = gls(model = riqueza ~ poly(gamma, 2)   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_gamma3 = gls(model = riqueza ~ poly(gamma, 3)   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_SSS3xgamma = gls(model = riqueza ~ poly(SSS, 2) * gamma   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_SSSxgamma = gls(model = riqueza ~ SSS * gamma   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+
+modelos_sinSource <- list(
+  "Nulo" = m_Nulo,
+  "SSS" = m_SSS,
+  "Clo" = m_Clo,
+  "gamma" = m_gamma,
+  "SSS^2" = m_SSS2,
+  "SSS^3" = m_SSS3,
+  "Chl^2" = m_Chl2,
+  "Chl^3" = m_Chl3,
+  "Chl3^2 * SSS^2" = m_Chl3xSSS2,
+  "Chl * SSS" = m_ChlxSSS,
+  "gamma^2" = m_gamma2,
+  "gamma^3" = m_gamma3,
+  "SSS3 * gamma" = m_SSS3xgamma,
+  "m_SSSxgamma" = m_SSSxgamma
+
+)
+
+aic_values <- sapply(modelos_sinSource, AIC)
+bic_values <- sapply(modelos_sinSource, BIC)
+rse_values <- sapply(modelos_sinSource, sigma)
+phi_values <- sapply(modelos_sinSource, function(m) {
+  
+  # Get the correlation structure
+  cor_struct <- coef(m$modelStruct$corStruct, unconstrained = FALSE)
+  
+})
+
+p_value_last_coef <- sapply(modelos_sinSource, function(m) {
+  
+  # Get the coefficient table from the summary
+  tTable <- summary(m)$tTable
+  
+  # Get the number of rows (which is the last coefficient)
+  last_row <- nrow(tTable)
+  
+  # Get the p-value from that last row
+  p_val <- tTable[last_row, "p-value"]
+  
+  return(p_val)
+})
+
+results_table <- data.frame(
+  Phi = phi_values,
+  SE = rse_values,
+  AIC = aic_values,
+  BIC = bic_values,
+  P_valor = p_value_last_coef
+)
+
+library(knitr)
+
+summary(m_SSS3xgamma)
+
+kable(results_table, 
+      digits = 3, 
+      caption = "GLS Model Comparison") # <-- No format argument
+
+
+
+```
+
+### Supuestos
+
+```{r}
+library(performance)
+
+model_names <- names(modelos_sinSource)
+# sapply(modelos_sinSource, check_model) 
+
+for (current_name in model_names) {
+  
+  m <- modelos_sinSource[[current_name]]
+    
+  r = residuals(m , type = "pearson")
+  predichos = predict(m)
+  
+  
+  plot(predichos , r , main = current_name)
+  abline(h = 0, col = "red", lty = 2)
+  print(shapiro.test(r))
+}
+
 ```
 
 ```{r}
