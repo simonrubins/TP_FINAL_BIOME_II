@@ -139,7 +139,7 @@ spahettiPlot(bbp , "bbp")
 
 linealidadPlot = function (var, nombre){
   
-ggplot(datos, aes(x=riqueza, y={{var}},group = source , color = source)) + 
+ggplot(datos, aes(x={{var}}, y= riqueza,group = source , color = source)) + 
   geom_point(  size=3,  shape=19 ) +  
   geom_smooth(method=lm, se=F, fullrange=F, size=0.5)+ 
   xlab("Riqueza") +  ylab(nombre) 
@@ -249,9 +249,7 @@ Sacamos el POC, particulas
 
 ```{r}
 
-
 m_Nulo = gls(model = riqueza ~ 1 , weights = varIdent(form = ~1|source) , data = datos,correlation = corCAR1(form = ~ dist|source))
-
 
 m_Source = gls(model = riqueza ~ source ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
 
@@ -264,6 +262,7 @@ m_Clo  = gls(model = riqueza ~ Chl    ,data = datos, weights = varIdent(form = ~
 m_Clo_S  = gls(model = riqueza ~ Chl * source   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
 
 m_POC = gls(model = riqueza ~ POC    ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
 
 m_POC_S = gls(model = riqueza ~ POC * source   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
 
@@ -288,26 +287,31 @@ m_SSS_Sxbbp =gls(model = riqueza ~ dist  * source * SSS   ,data = datos, weights
 m_SSS_Sxbbp =gls(model = riqueza ~ bbp  * source * SSS   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
 
 
+m_bbp_clo_S = gls(model = riqueza ~ (bbp + Chl)  * source ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_todas_s = gls(model = riqueza ~ (bbp + SSS + gamma + SST + POC + Chl)  * source ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
 
 modelos <- list(
   "Nulo" = m_Nulo,
   "Source" = m_Source,
   "SSS" = m_SSS,
   "Clo" = m_Clo,
-  "Clo_S" = m_Clo_S,
-  "SSS_S" = m_SSS_S,
   "POC" = m_POC,
-  "POC_S" = m_POC_S,
   "bbp" = m_bbp,
-  "bbp_S" = m_bbp_S,
+  "gamma" = m_gamma,
   "dist" = m_dist,
+  "SSS_S" = m_SSS_S,
+  "Clo_S" = m_Clo_S,
+  "POC_S" = m_POC_S,
+  "bbp_S" = m_bbp_S,
+  "gamma_S" = m_gamma_S,
   "dist_S" = m_dist_S,
   "dist_Sxbbp" = m_dist_Sxbbp,
   "distxbbp" = m_distxbbp,
-  "gamma" = m_gamma,
-  "gamma_S" = m_gamma_S,
   "SSS_Sxbbp" = m_SSS_Sxbbp,
-  "interaccionTotal" = m_interaccionTotal
+  "bbp+Chl * Source" = m_bbp_clo_S,
+  "Todas Interactuando con Source" = m_todas_s
 )
 
 ```
@@ -325,48 +329,46 @@ phi_values <- sapply(modelos, function(m) {
   
 })
 
-
-mean( m_SSS_S$residuals) / sqrt(75)
-
-summary(m_SSS_S)
-
+p_value_last_coef <- sapply(modelos, function(m) {
+  
+  # Get the coefficient table from the summary
+  tTable <- summary(m)$tTable
+  
+  # Get the number of rows (which is the last coefficient)
+  last_row <- nrow(tTable)
+  
+  # Get the p-value from that last row
+  p_val <- tTable[last_row, "p-value"]
+  
+  return(p_val)
+})
 
 results_table <- data.frame(
   Phi = phi_values,
-  SE = rse_values
+  SE = rse_values,
   AIC = aic_values,
   BIC = bic_values,
+  P_valor = p_value_last_coef
 )
 
-results_table
+library(knitr)
+
+kable(results_table, 
+      digits = 3, 
+      caption = "GLS Model Comparison") # <-- No format argument
+
 
 ```
 
 ```{r}
-
 residuals = residuals(m_SSS_S, type = "pearson")
 plot( predict(m_SSS_S) , residuals)
 ```
 
-```{r}
-
-
-AIC(m_Nulo, m_Source , m_SSS , m_Clo , m_Clo_S , m_SSS_S,m_POC , m_POC_S  ,m_bbp, m_bbp_S ,m_dist , m_dist_S , m_dist_Sxbbp, m_distxbbp,m_gamma , m_gamma_S, m_SSS_Sxbbp , m_interaccionTotal)
-BIC(m_Nulo, m_Source , m_SSS , m_Clo , m_Clo_S , m_SSS_S,m_POC , m_POC_S  ,m_bbp, m_bbp_S ,m_dist , m_dist_S , m_dist_Sxbbp, m_distxbbp , m_gamma , m_gamma_S, m_SSS_Sxbbp, m_interaccionTotal)
-
-
-```
-
-\
-
-```{r}
-modelo_N_VarIdent<-gls(model = riqueza ~ Chl + SSS + source + gamma + bbp + POC + SST,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
-
-modelo_N_VarPower = update(modelo_N_VarIdent,  weights = varPower())
+```         
 ```
 
 ```{r}
-modelo_N_VarIdent<-gls(model = riqueza ~ Chl + SSS + source + gamma + bbp + POC + SST,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
-
-modelo_N_VarPower = update(modelo_N_VarIdent,  weights = varPower())
+summary(m_bbp_clo_S)
+summary(m_SSS_Sxbbp)
 ```
