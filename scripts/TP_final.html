@@ -606,27 +606,40 @@ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST
 <span id="cb31-38"><a href="#cb31-38" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-39"><a href="#cb31-39" aria-hidden="true" tabindex="-1"></a>m_bbp_clo_S <span class="ot">=</span> <span class="fu">gls</span>(<span class="at">model =</span> riqueza <span class="sc">~</span> (bbp <span class="sc">+</span> Chl)  <span class="sc">*</span> source ,<span class="at">data =</span> datos, <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>source),<span class="at">correlation =</span> <span class="fu">corCAR1</span>(<span class="at">form =</span> <span class="sc">~</span> dist<span class="sc">|</span>source))</span>
 <span id="cb31-40"><a href="#cb31-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-41"><a href="#cb31-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-42"><a href="#cb31-42" aria-hidden="true" tabindex="-1"></a>modelos <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb31-43"><a href="#cb31-43" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Nulo"</span> <span class="ot">=</span> m_Nulo,</span>
-<span id="cb31-44"><a href="#cb31-44" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Source"</span> <span class="ot">=</span> m_Source,</span>
-<span id="cb31-45"><a href="#cb31-45" aria-hidden="true" tabindex="-1"></a>  <span class="st">"SSS"</span> <span class="ot">=</span> m_SSS,</span>
-<span id="cb31-46"><a href="#cb31-46" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Clo"</span> <span class="ot">=</span> m_Clo,</span>
-<span id="cb31-47"><a href="#cb31-47" aria-hidden="true" tabindex="-1"></a>  <span class="st">"POC"</span> <span class="ot">=</span> m_POC,</span>
-<span id="cb31-48"><a href="#cb31-48" aria-hidden="true" tabindex="-1"></a>  <span class="st">"bbp"</span> <span class="ot">=</span> m_bbp,</span>
-<span id="cb31-49"><a href="#cb31-49" aria-hidden="true" tabindex="-1"></a>  <span class="st">"gamma"</span> <span class="ot">=</span> m_gamma,</span>
-<span id="cb31-50"><a href="#cb31-50" aria-hidden="true" tabindex="-1"></a>  <span class="st">"dist"</span> <span class="ot">=</span> m_dist,</span>
-<span id="cb31-51"><a href="#cb31-51" aria-hidden="true" tabindex="-1"></a>  <span class="st">"SSS_S"</span> <span class="ot">=</span> m_SSS_S,</span>
-<span id="cb31-52"><a href="#cb31-52" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Clo_S"</span> <span class="ot">=</span> m_Clo_S,</span>
-<span id="cb31-53"><a href="#cb31-53" aria-hidden="true" tabindex="-1"></a>  <span class="st">"POC_S"</span> <span class="ot">=</span> m_POC_S,</span>
-<span id="cb31-54"><a href="#cb31-54" aria-hidden="true" tabindex="-1"></a>  <span class="st">"bbp_S"</span> <span class="ot">=</span> m_bbp_S,</span>
-<span id="cb31-55"><a href="#cb31-55" aria-hidden="true" tabindex="-1"></a>  <span class="st">"gamma_S"</span> <span class="ot">=</span> m_gamma_S,</span>
-<span id="cb31-56"><a href="#cb31-56" aria-hidden="true" tabindex="-1"></a>  <span class="st">"dist_S"</span> <span class="ot">=</span> m_dist_S,</span>
-<span id="cb31-57"><a href="#cb31-57" aria-hidden="true" tabindex="-1"></a>  <span class="st">"dist_Sxbbp"</span> <span class="ot">=</span> m_dist_Sxbbp,</span>
-<span id="cb31-58"><a href="#cb31-58" aria-hidden="true" tabindex="-1"></a>  <span class="st">"distxbbp"</span> <span class="ot">=</span> m_distxbbp,</span>
-<span id="cb31-59"><a href="#cb31-59" aria-hidden="true" tabindex="-1"></a>  <span class="st">"SSS_Sxbbp"</span> <span class="ot">=</span> m_SSS_Sxbbp,</span>
-<span id="cb31-60"><a href="#cb31-60" aria-hidden="true" tabindex="-1"></a>  <span class="st">"bbp+Chl * Source"</span> <span class="ot">=</span> m_bbp_clo_S</span>
-<span id="cb31-61"><a href="#cb31-61" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb31-41"><a href="#cb31-41" aria-hidden="true" tabindex="-1"></a>m_todas_s <span class="ot">=</span> <span class="fu">gls</span>(<span class="at">model =</span> riqueza <span class="sc">~</span> (bbp <span class="sc">+</span> SSS <span class="sc">+</span> gamma <span class="sc">+</span> SST <span class="sc">+</span> POC <span class="sc">+</span> Chl)  <span class="sc">*</span> source ,<span class="at">data =</span> datos, <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>source),<span class="at">correlation =</span> <span class="fu">corCAR1</span>(<span class="at">form =</span> <span class="sc">~</span> dist<span class="sc">|</span>source))</span>
+<span id="cb31-42"><a href="#cb31-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-43"><a href="#cb31-43" aria-hidden="true" tabindex="-1"></a>m_bbp_SxSSS <span class="ot">=</span> <span class="fu">gls</span>(<span class="at">model =</span> riqueza <span class="sc">~</span> ( SSS <span class="sc">*</span> source ) <span class="sc">+</span> bbp ,<span class="at">data =</span> datos, <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>source),<span class="at">correlation =</span> <span class="fu">corCAR1</span>(<span class="at">form =</span> <span class="sc">~</span> dist<span class="sc">|</span>source))</span>
+<span id="cb31-44"><a href="#cb31-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-45"><a href="#cb31-45" aria-hidden="true" tabindex="-1"></a>m_bbp_SSSxsource <span class="ot">=</span> <span class="fu">gls</span>(<span class="at">model =</span> riqueza <span class="sc">~</span> ( bbp <span class="sc">+</span> SSS  )  <span class="sc">*</span> source  ,<span class="at">data =</span> datos, <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>source),<span class="at">correlation =</span> <span class="fu">corCAR1</span>(<span class="at">form =</span> <span class="sc">~</span> dist<span class="sc">|</span>source))</span>
+<span id="cb31-46"><a href="#cb31-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-47"><a href="#cb31-47" aria-hidden="true" tabindex="-1"></a>m_bbpxSSSxsource <span class="ot">=</span> <span class="fu">gls</span>(<span class="at">model =</span> riqueza <span class="sc">~</span> bbp <span class="sc">*</span> SSS<span class="sc">*</span> source  ,<span class="at">data =</span> datos, <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>source),<span class="at">correlation =</span> <span class="fu">corCAR1</span>(<span class="at">form =</span> <span class="sc">~</span> dist<span class="sc">|</span>source))</span>
+<span id="cb31-48"><a href="#cb31-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-49"><a href="#cb31-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-50"><a href="#cb31-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-51"><a href="#cb31-51" aria-hidden="true" tabindex="-1"></a>modelos <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb31-52"><a href="#cb31-52" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Nulo"</span> <span class="ot">=</span> m_Nulo,</span>
+<span id="cb31-53"><a href="#cb31-53" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Source"</span> <span class="ot">=</span> m_Source,</span>
+<span id="cb31-54"><a href="#cb31-54" aria-hidden="true" tabindex="-1"></a>  <span class="st">"SSS"</span> <span class="ot">=</span> m_SSS,</span>
+<span id="cb31-55"><a href="#cb31-55" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Clo"</span> <span class="ot">=</span> m_Clo,</span>
+<span id="cb31-56"><a href="#cb31-56" aria-hidden="true" tabindex="-1"></a>  <span class="st">"POC"</span> <span class="ot">=</span> m_POC,</span>
+<span id="cb31-57"><a href="#cb31-57" aria-hidden="true" tabindex="-1"></a>  <span class="st">"bbp"</span> <span class="ot">=</span> m_bbp,</span>
+<span id="cb31-58"><a href="#cb31-58" aria-hidden="true" tabindex="-1"></a>  <span class="st">"gamma"</span> <span class="ot">=</span> m_gamma,</span>
+<span id="cb31-59"><a href="#cb31-59" aria-hidden="true" tabindex="-1"></a>  <span class="st">"dist"</span> <span class="ot">=</span> m_dist,</span>
+<span id="cb31-60"><a href="#cb31-60" aria-hidden="true" tabindex="-1"></a>  <span class="st">"SSS_S"</span> <span class="ot">=</span> m_SSS_S,</span>
+<span id="cb31-61"><a href="#cb31-61" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Clo_S"</span> <span class="ot">=</span> m_Clo_S,</span>
+<span id="cb31-62"><a href="#cb31-62" aria-hidden="true" tabindex="-1"></a>  <span class="st">"POC_S"</span> <span class="ot">=</span> m_POC_S,</span>
+<span id="cb31-63"><a href="#cb31-63" aria-hidden="true" tabindex="-1"></a>  <span class="st">"bbp_S"</span> <span class="ot">=</span> m_bbp_S,</span>
+<span id="cb31-64"><a href="#cb31-64" aria-hidden="true" tabindex="-1"></a>  <span class="st">"gamma_S"</span> <span class="ot">=</span> m_gamma_S,</span>
+<span id="cb31-65"><a href="#cb31-65" aria-hidden="true" tabindex="-1"></a>  <span class="st">"dist_S"</span> <span class="ot">=</span> m_dist_S,</span>
+<span id="cb31-66"><a href="#cb31-66" aria-hidden="true" tabindex="-1"></a>  <span class="st">"dist_Sxbbp"</span> <span class="ot">=</span> m_dist_Sxbbp,</span>
+<span id="cb31-67"><a href="#cb31-67" aria-hidden="true" tabindex="-1"></a>  <span class="st">"distxbbp"</span> <span class="ot">=</span> m_distxbbp,</span>
+<span id="cb31-68"><a href="#cb31-68" aria-hidden="true" tabindex="-1"></a>  <span class="st">"SSS_Sxbbp"</span> <span class="ot">=</span> m_SSS_Sxbbp,</span>
+<span id="cb31-69"><a href="#cb31-69" aria-hidden="true" tabindex="-1"></a>  <span class="st">"(bbp+Chl) * Source"</span> <span class="ot">=</span> m_bbp_clo_S,</span>
+<span id="cb31-70"><a href="#cb31-70" aria-hidden="true" tabindex="-1"></a>  <span class="st">"bbp + (Chl * Source)"</span> <span class="ot">=</span> m_bbp_SxSSS,</span>
+<span id="cb31-71"><a href="#cb31-71" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Todas Interactuando con Source"</span> <span class="ot">=</span> m_todas_s,</span>
+<span id="cb31-72"><a href="#cb31-72" aria-hidden="true" tabindex="-1"></a>  <span class="st">"(bbp + SSS) * source"</span>  <span class="ot">=</span> m_bbp_SSSxsource,</span>
+<span id="cb31-73"><a href="#cb31-73" aria-hidden="true" tabindex="-1"></a>  <span class="st">"bbp * SSS * source"</span> <span class="ot">=</span> m_bbpxSSSxsource</span>
+<span id="cb31-74"><a href="#cb31-74" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="comparación" class="level4">
@@ -637,38 +650,42 @@ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>rse_values <span class="ot">&lt;-</span> <span class="fu">sapply</span>(modelos, sigma)</span>
 <span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>phi_values <span class="ot">&lt;-</span> <span class="fu">sapply</span>(modelos, <span class="cf">function</span>(m) {</span>
 <span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get the correlation structure</span></span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  cor_struct <span class="ot">&lt;-</span> <span class="fu">coef</span>(m<span class="sc">$</span>modelStruct<span class="sc">$</span>corStruct, <span class="at">unconstrained =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>p_value_last_coef <span class="ot">&lt;-</span> <span class="fu">sapply</span>(modelos, <span class="cf">function</span>(m) {</span>
-<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get the coefficient table from the summary</span></span>
-<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>  tTable <span class="ot">&lt;-</span> <span class="fu">summary</span>(m)<span class="sc">$</span>tTable</span>
-<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get the number of rows (which is the last coefficient)</span></span>
-<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>  last_row <span class="ot">&lt;-</span> <span class="fu">nrow</span>(tTable)</span>
-<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get the p-value from that last row</span></span>
-<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>  p_val <span class="ot">&lt;-</span> tTable[last_row, <span class="st">"p-value"</span>]</span>
-<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(p_val)</span>
-<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>results_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">Phi =</span> phi_values,</span>
-<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">SE =</span> rse_values,</span>
-<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">AIC =</span> aic_values,</span>
-<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">BIC =</span> bic_values,</span>
-<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">P_valor =</span> p_value_last_coef</span>
-<span id="cb32-31"><a href="#cb32-31" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb32-32"><a href="#cb32-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-33"><a href="#cb32-33" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
-<span id="cb32-34"><a href="#cb32-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-35"><a href="#cb32-35" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(results_table, </span>
-<span id="cb32-36"><a href="#cb32-36" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">3</span>, </span>
-<span id="cb32-37"><a href="#cb32-37" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"GLS Model Comparison"</span>) <span class="co"># &lt;-- No format argument</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  cor_struct <span class="ot">&lt;-</span> m<span class="sc">$</span>modelStruct<span class="sc">$</span>corStruct </span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(cor_struct)) {</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">NA</span>) </span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Use unname() to remove the "Phi" name from the value</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">unname</span>(<span class="fu">coef</span>(cor_struct, <span class="at">unconstrained =</span> <span class="cn">FALSE</span>)))</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>p_value_last_coef <span class="ot">&lt;-</span> <span class="fu">sapply</span>(modelos, <span class="cf">function</span>(m) {</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get the coefficient table from the summary</span></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>  tTable <span class="ot">&lt;-</span> <span class="fu">summary</span>(m)<span class="sc">$</span>tTable</span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get the number of rows (which is the last coefficient)</span></span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>  last_row <span class="ot">&lt;-</span> <span class="fu">nrow</span>(tTable)</span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get the p-value from that last row</span></span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a>  p_val <span class="ot">&lt;-</span> tTable[last_row, <span class="st">"p-value"</span>]</span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(p_val)</span>
+<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a>results_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">Phi =</span> phi_values,</span>
+<span id="cb32-31"><a href="#cb32-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">SE =</span> rse_values,</span>
+<span id="cb32-32"><a href="#cb32-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">AIC =</span> aic_values,</span>
+<span id="cb32-33"><a href="#cb32-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">BIC =</span> bic_values,</span>
+<span id="cb32-34"><a href="#cb32-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">P_valor =</span> p_value_last_coef</span>
+<span id="cb32-35"><a href="#cb32-35" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb32-36"><a href="#cb32-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-37"><a href="#cb32-37" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb32-38"><a href="#cb32-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-39"><a href="#cb32-39" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(results_table, </span>
+<span id="cb32-40"><a href="#cb32-40" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">3</span>, </span>
+<span id="cb32-41"><a href="#cb32-41" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"GLS Model Comparison"</span>) <span class="co"># &lt;-- No format argument</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>GLS Model Comparison</caption>
@@ -684,7 +701,7 @@ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Nulo.Phi</td>
+<td style="text-align: left;">Nulo</td>
 <td style="text-align: right;">0.000</td>
 <td style="text-align: right;">7.597</td>
 <td style="text-align: right;">422.6</td>
@@ -692,7 +709,7 @@ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST
 <td style="text-align: right;">0.000</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Source.Phi</td>
+<td style="text-align: left;">Source</td>
 <td style="text-align: right;">0.000</td>
 <td style="text-align: right;">4.296</td>
 <td style="text-align: right;">393.4</td>
@@ -700,7 +717,7 @@ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST
 <td style="text-align: right;">0.000</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">SSS.Phi</td>
+<td style="text-align: left;">SSS</td>
 <td style="text-align: right;">0.000</td>
 <td style="text-align: right;">7.100</td>
 <td style="text-align: right;">420.2</td>
@@ -708,7 +725,7 @@ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST
 <td style="text-align: right;">0.426</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Clo.Phi</td>
+<td style="text-align: left;">Clo</td>
 <td style="text-align: right;">0.000</td>
 <td style="text-align: right;">6.074</td>
 <td style="text-align: right;">421.0</td>
@@ -716,7 +733,7 @@ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST
 <td style="text-align: right;">0.004</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">POC.Phi</td>
+<td style="text-align: left;">POC</td>
 <td style="text-align: right;">0.000</td>
 <td style="text-align: right;">6.764</td>
 <td style="text-align: right;">432.0</td>
@@ -724,7 +741,7 @@ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST
 <td style="text-align: right;">0.099</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">bbp.Phi</td>
+<td style="text-align: left;">bbp</td>
 <td style="text-align: right;">0.000</td>
 <td style="text-align: right;">6.048</td>
 <td style="text-align: right;">404.4</td>
@@ -732,7 +749,7 @@ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST
 <td style="text-align: right;">0.002</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">gamma.Phi</td>
+<td style="text-align: left;">gamma</td>
 <td style="text-align: right;">0.000</td>
 <td style="text-align: right;">4.662</td>
 <td style="text-align: right;">401.2</td>
@@ -740,7 +757,7 @@ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST
 <td style="text-align: right;">0.000</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">dist.Phi</td>
+<td style="text-align: left;">dist</td>
 <td style="text-align: right;">0.000</td>
 <td style="text-align: right;">7.468</td>
 <td style="text-align: right;">432.6</td>
@@ -748,7 +765,7 @@ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST
 <td style="text-align: right;">0.468</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">SSS_S.Phi</td>
+<td style="text-align: left;">SSS_S</td>
 <td style="text-align: right;">0.000</td>
 <td style="text-align: right;">4.308</td>
 <td style="text-align: right;">382.1</td>
@@ -756,7 +773,7 @@ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST
 <td style="text-align: right;">0.162</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Clo_S.Phi</td>
+<td style="text-align: left;">Clo_S</td>
 <td style="text-align: right;">0.000</td>
 <td style="text-align: right;">4.360</td>
 <td style="text-align: right;">400.0</td>
@@ -764,7 +781,7 @@ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST
 <td style="text-align: right;">0.429</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">POC_S.Phi</td>
+<td style="text-align: left;">POC_S</td>
 <td style="text-align: right;">0.000</td>
 <td style="text-align: right;">4.375</td>
 <td style="text-align: right;">414.5</td>
@@ -772,7 +789,7 @@ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST
 <td style="text-align: right;">0.536</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">bbp_S.Phi</td>
+<td style="text-align: left;">bbp_S</td>
 <td style="text-align: right;">0.000</td>
 <td style="text-align: right;">4.377</td>
 <td style="text-align: right;">367.7</td>
@@ -780,7 +797,7 @@ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST
 <td style="text-align: right;">0.215</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">gamma_S.Phi</td>
+<td style="text-align: left;">gamma_S</td>
 <td style="text-align: right;">0.000</td>
 <td style="text-align: right;">4.348</td>
 <td style="text-align: right;">387.7</td>
@@ -788,7 +805,7 @@ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST
 <td style="text-align: right;">0.988</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">dist_S.Phi</td>
+<td style="text-align: left;">dist_S</td>
 <td style="text-align: right;">0.000</td>
 <td style="text-align: right;">4.120</td>
 <td style="text-align: right;">408.3</td>
@@ -796,7 +813,7 @@ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST
 <td style="text-align: right;">0.075</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">dist_Sxbbp.Phi</td>
+<td style="text-align: left;">dist_Sxbbp</td>
 <td style="text-align: right;">0.000</td>
 <td style="text-align: right;">3.629</td>
 <td style="text-align: right;">363.7</td>
@@ -804,7 +821,7 @@ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST
 <td style="text-align: right;">0.048</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">distxbbp.Phi</td>
+<td style="text-align: left;">distxbbp</td>
 <td style="text-align: right;">0.000</td>
 <td style="text-align: right;">4.384</td>
 <td style="text-align: right;">387.8</td>
@@ -812,7 +829,7 @@ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST
 <td style="text-align: right;">0.301</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">SSS_Sxbbp.Phi</td>
+<td style="text-align: left;">SSS_Sxbbp</td>
 <td style="text-align: right;">0.000</td>
 <td style="text-align: right;">4.429</td>
 <td style="text-align: right;">318.2</td>
@@ -820,12 +837,44 @@ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST
 <td style="text-align: right;">0.373</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">bbp+Chl * Source.Phi</td>
+<td style="text-align: left;">(bbp+Chl) * Source</td>
 <td style="text-align: right;">0.862</td>
 <td style="text-align: right;">5.190</td>
 <td style="text-align: right;">358.0</td>
 <td style="text-align: right;">378.1</td>
 <td style="text-align: right;">0.087</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">bbp + (Chl * Source)</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">4.297</td>
+<td style="text-align: right;">369.1</td>
+<td style="text-align: right;">387.0</td>
+<td style="text-align: right;">0.114</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Todas Interactuando con Source</td>
+<td style="text-align: right;">0.818</td>
+<td style="text-align: right;">4.865</td>
+<td style="text-align: right;">341.0</td>
+<td style="text-align: right;">376.9</td>
+<td style="text-align: right;">0.980</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">(bbp + SSS) * source</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">4.335</td>
+<td style="text-align: right;">355.4</td>
+<td style="text-align: right;">375.5</td>
+<td style="text-align: right;">0.160</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">bbp * SSS * source</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">4.429</td>
+<td style="text-align: right;">318.2</td>
+<td style="text-align: right;">342.5</td>
+<td style="text-align: right;">0.373</td>
 </tr>
 </tbody>
 </table>
@@ -844,14 +893,142 @@ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST
 </div>
 <pre><code></code></pre>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>modelo_N_VarIdent<span class="ot">&lt;-</span><span class="fu">gls</span>(<span class="at">model =</span> riqueza <span class="sc">~</span> Chl <span class="sc">+</span> SSS <span class="sc">+</span> source <span class="sc">+</span> gamma <span class="sc">+</span> bbp <span class="sc">+</span> POC <span class="sc">+</span> SST,<span class="at">data =</span> datos, <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>source),<span class="at">correlation =</span> <span class="fu">corCAR1</span>(<span class="at">form =</span> <span class="sc">~</span> dist<span class="sc">|</span>source))</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>modelo_N_VarPower <span class="ot">=</span> <span class="fu">update</span>(modelo_N_VarIdent,  <span class="at">weights =</span> <span class="fu">varPower</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m_bbp_clo_S)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Generalized least squares fit by REML
+  Model: riqueza ~ (bbp + Chl) * source 
+  Data: datos 
+  AIC   BIC logLik
+  358 378.1   -170
+
+Correlation Structure: Continuous AR(1)
+ Formula: ~dist | source 
+ Parameter estimate(s):
+   Phi 
+0.8622 
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | source 
+ Parameter estimates:
+transitorio     estable 
+     1.0000      0.5972 
+
+Coefficients:
+                    Value Std.Error t-value p-value
+(Intercept)          19.0       3.0   6.285  0.0000
+bbp                2332.2     685.5   3.402  0.0011
+Chl                  -1.1       0.1  -9.752  0.0000
+sourceestable        -3.7       3.4  -1.087  0.2809
+bbp:sourceestable -1998.2    1248.6  -1.600  0.1141
+Chl:sourceestable     0.9       0.5   1.736  0.0871
+
+ Correlation: 
+                  (Intr) bbp    Chl    srcstb bbp:sr
+bbp               -0.801                            
+Chl                0.564 -0.819                     
+sourceestable     -0.888  0.712 -0.501              
+bbp:sourceestable  0.440 -0.549  0.449 -0.694       
+Chl:sourceestable -0.132  0.192 -0.235  0.165 -0.545
+
+Standardized residuals:
+    Min      Q1     Med      Q3     Max 
+-1.8231 -0.6300 -0.1310  0.5695  2.2442 
+
+Residual standard error: 5.19 
+Degrees of freedom: 75 total; 69 residual</code></pre>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>modelo_N_VarIdent<span class="ot">&lt;-</span><span class="fu">gls</span>(<span class="at">model =</span> riqueza <span class="sc">~</span> Chl <span class="sc">+</span> SSS <span class="sc">+</span> source <span class="sc">+</span> gamma <span class="sc">+</span> bbp <span class="sc">+</span> POC <span class="sc">+</span> SST,<span class="at">data =</span> datos, <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>source),<span class="at">correlation =</span> <span class="fu">corCAR1</span>(<span class="at">form =</span> <span class="sc">~</span> dist<span class="sc">|</span>source))</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>modelo_N_VarPower <span class="ot">=</span> <span class="fu">update</span>(modelo_N_VarIdent,  <span class="at">weights =</span> <span class="fu">varPower</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m_SSS_Sxbbp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Generalized least squares fit by REML
+  Model: riqueza ~ bbp * source * SSS 
+  Data: datos 
+    AIC   BIC logLik
+  318.2 342.5 -148.1
+
+Correlation Structure: Continuous AR(1)
+ Formula: ~dist | source 
+ Parameter estimate(s):
+      Phi 
+4.575e-16 
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | source 
+ Parameter estimates:
+transitorio     estable 
+     1.0000      0.6164 
+
+Coefficients:
+                        Value Std.Error t-value p-value
+(Intercept)              1717      1673  1.0264  0.3084
+bbp                   -137257    341581 -0.4018  0.6891
+sourceestable           -2124      1698 -1.2509  0.2153
+SSS                       -51        50 -1.0124  0.3150
+bbp:sourceestable      388223    431468  0.8998  0.3715
+bbp:SSS                  4108     10263  0.4002  0.6903
+sourceestable:SSS          63        51  1.2450  0.2175
+bbp:sourceestable:SSS  -11598     12926 -0.8973  0.3728
+
+ Correlation: 
+                      (Intr) bbp    srcstb SSS    bbp:sr bb:SSS sr:SSS
+bbp                   -0.831                                          
+sourceestable         -0.985  0.819                                   
+SSS                   -1.000  0.832  0.985                            
+bbp:sourceestable      0.658 -0.792 -0.741 -0.659                     
+bbp:SSS                0.830 -1.000 -0.818 -0.831  0.792              
+sourceestable:SSS      0.985 -0.820 -1.000 -0.985  0.742  0.819       
+bbp:sourceestable:SSS -0.659  0.794  0.742  0.660 -1.000 -0.794 -0.742
+
+Standardized residuals:
+    Min      Q1     Med      Q3     Max 
+-1.8470 -0.6878 -0.0382  0.5169  2.5476 
+
+Residual standard error: 4.429 
+Degrees of freedom: 75 total; 67 residual</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m_bbp_SSSxsource)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Generalized least squares fit by REML
+  Model: riqueza ~ (bbp + SSS) * source 
+  Data: datos 
+    AIC   BIC logLik
+  355.4 375.5 -168.7
+
+Correlation Structure: Continuous AR(1)
+ Formula: ~dist | source 
+ Parameter estimate(s):
+      Phi 
+4.002e-18 
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | source 
+ Parameter estimates:
+transitorio     estable 
+     1.0000      0.6292 
+
+Coefficients:
+                    Value Std.Error t-value p-value
+(Intercept)        1156.1     912.6  1.2668  0.2095
+bbp                -542.9     628.4 -0.8640  0.3906
+SSS                 -33.9      27.3 -1.2435  0.2179
+sourceestable     -1316.8     922.2 -1.4280  0.1578
+bbp:sourceestable   249.3     991.6  0.2514  0.8022
+SSS:sourceestable    39.2      27.6  1.4214  0.1597
+
+ Correlation: 
+                  (Intr) bbp    SSS    srcstb bbp:sr
+bbp               -0.873                            
+SSS               -1.000  0.872                     
+sourceestable     -0.990  0.864  0.990              
+bbp:sourceestable  0.553 -0.634 -0.553 -0.602       
+SSS:sourceestable  0.990 -0.863 -0.990 -1.000  0.601
+
+Standardized residuals:
+     Min       Q1      Med       Q3      Max 
+-1.91908 -0.69241 -0.07051  0.56508  2.50646 
+
+Residual standard error: 4.335 
+Degrees of freedom: 75 total; 69 residual</code></pre>
+</div>
 </div>
 </section>
 </section>

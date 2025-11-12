@@ -291,6 +291,13 @@ m_bbp_clo_S = gls(model = riqueza ~ (bbp + Chl)  * source ,data = datos, weights
 
 m_todas_s = gls(model = riqueza ~ (bbp + SSS + gamma + SST + POC + Chl)  * source ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
 
+m_bbp_SxSSS = gls(model = riqueza ~ ( SSS * source ) + bbp ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_bbp_SSSxsource = gls(model = riqueza ~ ( bbp + SSS  )  * source  ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_bbpxSSSxsource = gls(model = riqueza ~ bbp * SSS* source  ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+
 
 modelos <- list(
   "Nulo" = m_Nulo,
@@ -310,8 +317,11 @@ modelos <- list(
   "dist_Sxbbp" = m_dist_Sxbbp,
   "distxbbp" = m_distxbbp,
   "SSS_Sxbbp" = m_SSS_Sxbbp,
-  "bbp+Chl * Source" = m_bbp_clo_S,
-  "Todas Interactuando con Source" = m_todas_s
+  "(bbp+Chl) * Source" = m_bbp_clo_S,
+  "bbp + (Chl * Source)" = m_bbp_SxSSS,
+  "Todas Interactuando con Source" = m_todas_s,
+  "(bbp + SSS) * source"  = m_bbp_SSSxsource,
+  "bbp * SSS * source" = m_bbpxSSSxsource
 )
 
 ```
@@ -324,11 +334,15 @@ bic_values <- sapply(modelos, BIC)
 rse_values <- sapply(modelos, sigma)
 phi_values <- sapply(modelos, function(m) {
   
-  # Get the correlation structure
-  cor_struct <- coef(m$modelStruct$corStruct, unconstrained = FALSE)
+  cor_struct <- m$modelStruct$corStruct 
   
+  if (is.null(cor_struct)) {
+    return(NA) 
+  } else {
+    # Use unname() to remove the "Phi" name from the value
+    return(unname(coef(cor_struct, unconstrained = FALSE)))
+  }
 })
-
 p_value_last_coef <- sapply(modelos, function(m) {
   
   # Get the coefficient table from the summary
@@ -371,4 +385,5 @@ plot( predict(m_SSS_S) , residuals)
 ```{r}
 summary(m_bbp_clo_S)
 summary(m_SSS_Sxbbp)
+summary(m_bbp_SSSxsource)
 ```
