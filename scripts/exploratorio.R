@@ -349,12 +349,23 @@ summary(m0)
 m2 <- nlme(model = riqueza ~ Chl + SSS + source + gamma + bbp + POC + SST,data = datos_distancia,correlation = corCAR1(form = ~ dist_km))
 
 ####MODELO 3#######
-m3<-gls(model = riqueza ~ Chl + SSS + source + gamma + bbp + POC + SST,data = datos_distancia, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist_km|source))
+m3<-gls(model = riqueza ~ Chl+ source + gamma + bbp + SST+SSS,data = datos_distancia, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist_km|source))
+AIC(m3)
 
-plot(m3)
-check_model(m3)
-r<-resid(m3, type="pearson")
-plot(predict(m3),r)
+m3_tmb_ar1 <- glmmTMB(
+  riqueza ~ Chl + SSS + source + gamma + bbp + POC + SST +
+    ar1(factor(dist_bin)| source),
+  dispformula = ~ source,
+  data = datos_distancia,
+  family = gaussian()
+)
+summary(m3)
+Anova(m3_tmb_ar1)
+drop1(m3_tmb_ar1)
+plot(m3_tmb_ar1)
+check_model(m3_tmb_ar1)
+r<-resid(m3_tmb_ar1, type="pearson")
+plot(predict(m3_tmb_ar1),r)
 car::qqPlot(r)
 summary(m3)
 shapiro.test(r)
@@ -378,8 +389,9 @@ m5<-gls(model = riqueza ~ Chl + SSS+source + gamma+bbp,data = datos_distancia, w
 AIC(m3,m4,m5) #EL m4 Es el de menor AIC, HASTA PROBANDO SACANDO MÁS VARIABLES
 
 ####PLANTEO MODELOS CON INTERACCIÓN####
-m4_con_int<-gls(model = riqueza ~ Chl+(SSS+ gamma + bbp+ SST) * source ,data = datos_distancia, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist_km|source)) #NOS QUEDAMOS CON ESTE MODELO POR AHORA AIC=327
+m4_con_int<-gls(model = riqueza ~ Chl+(SSS+ gamma +bbp+SST) * source ,data = datos_distancia, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist_km|source)) #NOS QUEDAMOS CON ESTE MODELO POR AHORA AIC=327
 AIC(m4_con_int)
+check_model(m4_con_int)
 BIC()
 anova(m4, m4_con_int)
 plot(m4_con_int)
@@ -387,12 +399,21 @@ plot(m4_con_int)
 check_model(m4_con_int)
 r<-resid(m4_con_int, type="pearson")
 qqPlot(r)
-plot
+plot(m4_con_int$fitted, r)
 summary(m4_con_int)
 shapiro.test(r)
 hist(r)
 
+compsimples<-emmeans(m4_con_int, pairwise~source|Chl)
+summary(compsimples)
 
+plot(compsimples, comparisons = T)
+pred_modelo<-as.data.frame(compsimples$emmeans)
+ggplot(pred_modelo, aes(x = Chl, y = emmean, fill = source)) +
+  geom_point(aes(colour = source)) +
+  geom_errorbar(aes(ymin = emmean - SE, ymax = emmean + SE, colour = source), width = 0.2) +
+  labs(x = "Tiempo") + labs(y = "Biomasa microbiana (μg C/g sustrato)") +
+  ggtitle("Comparación de Biomasa microbiana en el tiempo para cada tratamiento")
 
 m5_sin_int<-gls(model = riqueza ~ Chl +gamma+SST+SSS+bbp+source,data = datos_distancia, weights = varIdent(form = ~1|source),correlation = corLin(form = ~ dist_km|source))
 m5_con_int<-gls(model = riqueza ~ (Chl +gamma+SST+SSS+bbp)*source,data = datos_distancia, weights = varIdent(form = ~1|source),correlation = corLin(form = ~ dist_km|source))
@@ -434,5 +455,3 @@ plot(datos_distancia$riqueza, pred_rf,
 abline(0, 1, col = "red")
 
 ####HACEMOS MODELOS DE A UNA VARIABLE####
-
-
