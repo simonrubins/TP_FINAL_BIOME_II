@@ -132,7 +132,25 @@ spahettiPlot(bbp , "bbp")
 
 ```
 
+### Linealidad
+
 ```{r}
+#| warning: false
+
+linealidadPlot = function (var, nombre){
+  
+ggplot(datos, aes(x=riqueza, y={{var}},group = source , color = source)) + 
+  geom_point(  size=3,  shape=19 ) +  
+  geom_smooth(method=lm, se=F, fullrange=F, size=0.5)+ 
+  xlab("Riqueza") +  ylab(nombre) 
+}
+
+linealidadPlot(Chl,"Chl")
+linealidadPlot(POC,"POC")
+linealidadPlot(bbp,"bbp")
+linealidadPlot(gamma,"gamma")
+linealidadPlot(SST,"SST")
+linealidadPlot(SSS,"SSS")
 
 
 ```
@@ -227,10 +245,13 @@ Sacamos el POC, particulas
 
 #### Seleccion de modelos
 
+#### Modelos
+
 ```{r}
 
 
-m_Nulo = gls(model = riqueza ~ 1 ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+m_Nulo = gls(model = riqueza ~ 1 , weights = varIdent(form = ~1|source) , data = datos,correlation = corCAR1(form = ~ dist|source))
+
 
 m_Source = gls(model = riqueza ~ source ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
 
@@ -268,14 +289,56 @@ m_SSS_Sxbbp =gls(model = riqueza ~ bbp  * source * SSS   ,data = datos, weights 
 
 
 
+modelos <- list(
+  "Nulo" = m_Nulo,
+  "Source" = m_Source,
+  "SSS" = m_SSS,
+  "Clo" = m_Clo,
+  "Clo_S" = m_Clo_S,
+  "SSS_S" = m_SSS_S,
+  "POC" = m_POC,
+  "POC_S" = m_POC_S,
+  "bbp" = m_bbp,
+  "bbp_S" = m_bbp_S,
+  "dist" = m_dist,
+  "dist_S" = m_dist_S,
+  "dist_Sxbbp" = m_dist_Sxbbp,
+  "distxbbp" = m_distxbbp,
+  "gamma" = m_gamma,
+  "gamma_S" = m_gamma_S,
+  "SSS_Sxbbp" = m_SSS_Sxbbp,
+  "interaccionTotal" = m_interaccionTotal
+)
 
-summary(m_SSS)
-summary(m_gamma_S)
-anova(m_gamma_S)
+```
+
+#### Comparación
+
+```{r}
+aic_values <- sapply(modelos, AIC)
+bic_values <- sapply(modelos, BIC)
+rse_values <- sapply(modelos, sigma)
+phi_values <- sapply(modelos, function(m) {
+  
+  # Get the correlation structure
+  cor_struct <- coef(m$modelStruct$corStruct, unconstrained = FALSE)
+  
+})
 
 
-summary(m_SSS_Sxbbp)
+mean( m_SSS_S$residuals) / sqrt(75)
 
+summary(m_SSS_S)
+
+
+results_table <- data.frame(
+  Phi = phi_values,
+  SE = rse_values
+  AIC = aic_values,
+  BIC = bic_values,
+)
+
+results_table
 
 ```
 
@@ -286,32 +349,11 @@ plot( predict(m_SSS_S) , residuals)
 ```
 
 ```{r}
-m_interaccionTotal =gls(model = riqueza ~ bbp  * source * SSS  * SST  * gamma    ,data = datos, weights = varIdent(form = ~1|source) ,correlation = corCAR1(form = ~ dist|source))
+
 
 AIC(m_Nulo, m_Source , m_SSS , m_Clo , m_Clo_S , m_SSS_S,m_POC , m_POC_S  ,m_bbp, m_bbp_S ,m_dist , m_dist_S , m_dist_Sxbbp, m_distxbbp,m_gamma , m_gamma_S, m_SSS_Sxbbp , m_interaccionTotal)
 BIC(m_Nulo, m_Source , m_SSS , m_Clo , m_Clo_S , m_SSS_S,m_POC , m_POC_S  ,m_bbp, m_bbp_S ,m_dist , m_dist_S , m_dist_Sxbbp, m_distxbbp , m_gamma , m_gamma_S, m_SSS_Sxbbp, m_interaccionTotal)
-summary(m_interaccionTotal)
 
-```
-
-Linealidad
-
-```{r}
-
-ggplot(datos, aes(x=riqueza, y=Chl , group = source , color = source)) + 
-  geom_point(size=3,  shape=19 ) +  
-  geom_smooth(method=lm, se=F, fullrange=F, size=0.5)+ 
-  xlab("Riqueza") +  ylab("Chl") 
-
-ggplot(datos, aes(x=riqueza, y=bbp , group = source , color = source)) + 
-  geom_point(size=3,  shape=19 ) +  
-  geom_smooth(method=lm, se=F, fullrange=F, size=0.5)+ 
-  xlab("Riqueza") +  ylab("bbp") 
-
-ggplot(datos, aes(x=gamma, y=bbp , group = source , color = source)) + 
-  geom_point(size=3,  shape=19 ) +  
-  geom_smooth(method=lm, se=F, fullrange=F, size=0.5)+ 
-  xlab("Riqueza") +  ylab("gamma") 
 
 ```
 
