@@ -547,11 +547,22 @@ ggplot(datos, aes(x=SSS, y= gamma)) +
   
 ggplot(datos, aes(x=SSS, y= POC)) + 
   geom_point(  size=3,  shape=19 ) +  
-  xlab( "SSS" ) +  ylab("bbp") 
+  xlab( "SSS" ) +  ylab("POC") 
 }
   
-ggplot(datos, aes(x=SSS, y= POC)) + 
+ggplot(datos, aes(x=SSS, y= SST)) + 
   geom_point(  size=3,  shape=19 ) +  
-  xlab( "SSS" ) +  ylab("bbp") 
+  xlab( "SSS" ) +  ylab("SST") 
 }
+```
+
+```{r}
+#Modelos seleccionados
+
+m_SSS2 = gls(model = riqueza ~ poly(SSS, 2)   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+
+```
+
+```{}
 ```
