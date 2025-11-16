@@ -2123,58 +2123,64 @@ alternative hypothesis: true autocorrelation is not 0</code></pre>
 <section id="modelos-finales" class="level3">
 <h3 class="anchored" data-anchor-id="modelos-finales">Modelos Finales</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>modelos_finales <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Nulo"</span> <span class="ot">=</span> m_Nulo,</span>
-<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"gamma"</span> <span class="ot">=</span> m_gamma,</span>
-<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"m_gamma_sinMatriz"</span> <span class="ot">=</span> m_gamma_sinMatriz,</span>
-<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"SSS^2"</span> <span class="ot">=</span> m_SSS2,</span>
-<span id="cb76-6"><a href="#cb76-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"m_SSS2_sinMatriz"</span> <span class="ot">=</span> m_SSS2_sinMatriz</span>
-<span id="cb76-7"><a href="#cb76-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb76-8"><a href="#cb76-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb76-9"><a href="#cb76-9" aria-hidden="true" tabindex="-1"></a>aic_values <span class="ot">&lt;-</span> <span class="fu">sapply</span>(modelos_finales, AIC)</span>
-<span id="cb76-10"><a href="#cb76-10" aria-hidden="true" tabindex="-1"></a>bic_values <span class="ot">&lt;-</span> <span class="fu">sapply</span>(modelos_finales, BIC)</span>
-<span id="cb76-11"><a href="#cb76-11" aria-hidden="true" tabindex="-1"></a>rse_values <span class="ot">&lt;-</span> <span class="fu">sapply</span>(modelos_finales, sigma)</span>
-<span id="cb76-12"><a href="#cb76-12" aria-hidden="true" tabindex="-1"></a>phi_values <span class="ot">&lt;-</span> <span class="fu">sapply</span>(modelos_finales, <span class="cf">function</span>(m) {</span>
-<span id="cb76-13"><a href="#cb76-13" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb76-14"><a href="#cb76-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get the correlation structure</span></span>
-<span id="cb76-15"><a href="#cb76-15" aria-hidden="true" tabindex="-1"></a>  cor_struct <span class="ot">&lt;-</span> <span class="fu">coef</span>(m<span class="sc">$</span>modelStruct<span class="sc">$</span>corStruct, <span class="at">unconstrained =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb76-16"><a href="#cb76-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb76-17"><a href="#cb76-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(cor_struct)){</span>
-<span id="cb76-18"><a href="#cb76-18" aria-hidden="true" tabindex="-1"></a>  cor_struct <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb76-19"><a href="#cb76-19" aria-hidden="true" tabindex="-1"></a>  } </span>
-<span id="cb76-20"><a href="#cb76-20" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb76-21"><a href="#cb76-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(cor_struct)</span>
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>m_SSS2ygamma <span class="ot">=</span> <span class="fu">gls</span>(<span class="at">model =</span> riqueza <span class="sc">~</span> <span class="fu">scale</span>(SSS) <span class="sc">+</span> <span class="fu">I</span>(<span class="fu">scale</span>(SSS)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> gamma, </span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> datos, </span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>source) ,<span class="at">correlation =</span> <span class="fu">corCAR1</span>(<span class="at">form =</span> <span class="sc">~</span> dist<span class="sc">|</span>source))</span>
+<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-6"><a href="#cb76-6" aria-hidden="true" tabindex="-1"></a>modelos_finales <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb76-7"><a href="#cb76-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Nulo"</span> <span class="ot">=</span> m_Nulo,</span>
+<span id="cb76-8"><a href="#cb76-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Tamaño Particulas"</span> <span class="ot">=</span> m_gamma,</span>
+<span id="cb76-9"><a href="#cb76-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"m_gamma_sinMatriz"</span> <span class="ot">=</span> m_gamma_sinMatriz,</span>
+<span id="cb76-10"><a href="#cb76-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"SSS^2"</span> <span class="ot">=</span> m_SSS2,</span>
+<span id="cb76-11"><a href="#cb76-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">"m_SSS2_sinMatriz"</span> <span class="ot">=</span> m_SSS2_sinMatriz,</span>
+<span id="cb76-12"><a href="#cb76-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">"SSS^2 + Gamma"</span> <span class="ot">=</span> m_SSS2ygamma</span>
+<span id="cb76-13"><a href="#cb76-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb76-14"><a href="#cb76-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-15"><a href="#cb76-15" aria-hidden="true" tabindex="-1"></a>aic_values <span class="ot">&lt;-</span> <span class="fu">sapply</span>(modelos_finales, AIC)</span>
+<span id="cb76-16"><a href="#cb76-16" aria-hidden="true" tabindex="-1"></a>bic_values <span class="ot">&lt;-</span> <span class="fu">sapply</span>(modelos_finales, BIC)</span>
+<span id="cb76-17"><a href="#cb76-17" aria-hidden="true" tabindex="-1"></a>rse_values <span class="ot">&lt;-</span> <span class="fu">sapply</span>(modelos_finales, sigma)</span>
+<span id="cb76-18"><a href="#cb76-18" aria-hidden="true" tabindex="-1"></a>phi_values <span class="ot">&lt;-</span> <span class="fu">sapply</span>(modelos_finales, <span class="cf">function</span>(m) {</span>
+<span id="cb76-19"><a href="#cb76-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb76-20"><a href="#cb76-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get the correlation structure</span></span>
+<span id="cb76-21"><a href="#cb76-21" aria-hidden="true" tabindex="-1"></a>  cor_struct <span class="ot">&lt;-</span> <span class="fu">coef</span>(m<span class="sc">$</span>modelStruct<span class="sc">$</span>corStruct, <span class="at">unconstrained =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb76-22"><a href="#cb76-22" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb76-23"><a href="#cb76-23" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb76-24"><a href="#cb76-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb76-25"><a href="#cb76-25" aria-hidden="true" tabindex="-1"></a>p_value_last_coef <span class="ot">&lt;-</span> <span class="fu">sapply</span>(modelos_finales, <span class="cf">function</span>(m) {</span>
+<span id="cb76-23"><a href="#cb76-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(cor_struct)){</span>
+<span id="cb76-24"><a href="#cb76-24" aria-hidden="true" tabindex="-1"></a>  cor_struct <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb76-25"><a href="#cb76-25" aria-hidden="true" tabindex="-1"></a>  } </span>
 <span id="cb76-26"><a href="#cb76-26" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb76-27"><a href="#cb76-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get the coefficient table from the summary</span></span>
-<span id="cb76-28"><a href="#cb76-28" aria-hidden="true" tabindex="-1"></a>  tTable <span class="ot">&lt;-</span> <span class="fu">summary</span>(m)<span class="sc">$</span>tTable</span>
-<span id="cb76-29"><a href="#cb76-29" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb76-30"><a href="#cb76-30" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get the number of rows (which is the last coefficient)</span></span>
-<span id="cb76-31"><a href="#cb76-31" aria-hidden="true" tabindex="-1"></a>  last_row <span class="ot">&lt;-</span> <span class="fu">nrow</span>(tTable)</span>
+<span id="cb76-27"><a href="#cb76-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(cor_struct)</span>
+<span id="cb76-28"><a href="#cb76-28" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb76-29"><a href="#cb76-29" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb76-30"><a href="#cb76-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-31"><a href="#cb76-31" aria-hidden="true" tabindex="-1"></a>p_value_last_coef <span class="ot">&lt;-</span> <span class="fu">sapply</span>(modelos_finales, <span class="cf">function</span>(m) {</span>
 <span id="cb76-32"><a href="#cb76-32" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb76-33"><a href="#cb76-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get the p-value from that last row</span></span>
-<span id="cb76-34"><a href="#cb76-34" aria-hidden="true" tabindex="-1"></a>  p_val <span class="ot">&lt;-</span> tTable[last_row, <span class="st">"p-value"</span>]</span>
+<span id="cb76-33"><a href="#cb76-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get the coefficient table from the summary</span></span>
+<span id="cb76-34"><a href="#cb76-34" aria-hidden="true" tabindex="-1"></a>  tTable <span class="ot">&lt;-</span> <span class="fu">summary</span>(m)<span class="sc">$</span>tTable</span>
 <span id="cb76-35"><a href="#cb76-35" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb76-36"><a href="#cb76-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(p_val)</span>
-<span id="cb76-37"><a href="#cb76-37" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb76-38"><a href="#cb76-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb76-39"><a href="#cb76-39" aria-hidden="true" tabindex="-1"></a>results_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb76-40"><a href="#cb76-40" aria-hidden="true" tabindex="-1"></a>  <span class="at">Phi =</span> phi_values,</span>
-<span id="cb76-41"><a href="#cb76-41" aria-hidden="true" tabindex="-1"></a>  <span class="at">SE =</span> rse_values,</span>
-<span id="cb76-42"><a href="#cb76-42" aria-hidden="true" tabindex="-1"></a>  <span class="at">AIC =</span> aic_values,</span>
-<span id="cb76-43"><a href="#cb76-43" aria-hidden="true" tabindex="-1"></a>  <span class="at">BIC =</span> bic_values,</span>
-<span id="cb76-44"><a href="#cb76-44" aria-hidden="true" tabindex="-1"></a>  <span class="at">P_valor =</span> p_value_last_coef</span>
-<span id="cb76-45"><a href="#cb76-45" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb76-46"><a href="#cb76-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb76-47"><a href="#cb76-47" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
-<span id="cb76-48"><a href="#cb76-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb76-49"><a href="#cb76-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb76-50"><a href="#cb76-50" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(results_table, </span>
-<span id="cb76-51"><a href="#cb76-51" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">3</span>, </span>
-<span id="cb76-52"><a href="#cb76-52" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"GLS Model Comparison"</span>) <span class="co"># &lt;-- No format argument</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb76-36"><a href="#cb76-36" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get the number of rows (which is the last coefficient)</span></span>
+<span id="cb76-37"><a href="#cb76-37" aria-hidden="true" tabindex="-1"></a>  last_row <span class="ot">&lt;-</span> <span class="fu">nrow</span>(tTable)</span>
+<span id="cb76-38"><a href="#cb76-38" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb76-39"><a href="#cb76-39" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get the p-value from that last row</span></span>
+<span id="cb76-40"><a href="#cb76-40" aria-hidden="true" tabindex="-1"></a>  p_val <span class="ot">&lt;-</span> tTable[last_row, <span class="st">"p-value"</span>]</span>
+<span id="cb76-41"><a href="#cb76-41" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb76-42"><a href="#cb76-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(p_val)</span>
+<span id="cb76-43"><a href="#cb76-43" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb76-44"><a href="#cb76-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-45"><a href="#cb76-45" aria-hidden="true" tabindex="-1"></a>results_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb76-46"><a href="#cb76-46" aria-hidden="true" tabindex="-1"></a>  <span class="at">Phi =</span> phi_values,</span>
+<span id="cb76-47"><a href="#cb76-47" aria-hidden="true" tabindex="-1"></a>  <span class="at">SE =</span> rse_values,</span>
+<span id="cb76-48"><a href="#cb76-48" aria-hidden="true" tabindex="-1"></a>  <span class="at">AIC =</span> aic_values,</span>
+<span id="cb76-49"><a href="#cb76-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">BIC =</span> bic_values,</span>
+<span id="cb76-50"><a href="#cb76-50" aria-hidden="true" tabindex="-1"></a>  <span class="at">P_valor =</span> p_value_last_coef</span>
+<span id="cb76-51"><a href="#cb76-51" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb76-52"><a href="#cb76-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-53"><a href="#cb76-53" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb76-54"><a href="#cb76-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-55"><a href="#cb76-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-56"><a href="#cb76-56" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(results_table, </span>
+<span id="cb76-57"><a href="#cb76-57" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">3</span>, </span>
+<span id="cb76-58"><a href="#cb76-58" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"GLS Model Comparison"</span>) <span class="co"># &lt;-- No format argument</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>GLS Model Comparison</caption>
@@ -2195,15 +2201,15 @@ alternative hypothesis: true autocorrelation is not 0</code></pre>
 <td style="text-align: right;">7.597</td>
 <td style="text-align: right;">422.6</td>
 <td style="text-align: right;">431.8</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.000</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">gamma.Phi</td>
+<td style="text-align: left;">Tamaño Particulas.Phi</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">4.662</td>
 <td style="text-align: right;">401.2</td>
 <td style="text-align: right;">412.7</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.000</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">m_gamma_sinMatriz</td>
@@ -2211,7 +2217,7 @@ alternative hypothesis: true autocorrelation is not 0</code></pre>
 <td style="text-align: right;">2.867</td>
 <td style="text-align: right;">401.1</td>
 <td style="text-align: right;">410.3</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.000</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">SSS^2.Phi</td>
@@ -2219,7 +2225,7 @@ alternative hypothesis: true autocorrelation is not 0</code></pre>
 <td style="text-align: right;">4.910</td>
 <td style="text-align: right;">388.4</td>
 <td style="text-align: right;">402.0</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.000</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">m_SSS2_sinMatriz</td>
@@ -2227,7 +2233,15 @@ alternative hypothesis: true autocorrelation is not 0</code></pre>
 <td style="text-align: right;">2.607</td>
 <td style="text-align: right;">397.0</td>
 <td style="text-align: right;">408.4</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SSS^2 + Gamma.Phi</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: right;">4.727</td>
+<td style="text-align: right;">392.9</td>
+<td style="text-align: right;">408.8</td>
+<td style="text-align: right;">0.055</td>
 </tr>
 </tbody>
 </table>
@@ -2249,8 +2263,14 @@ alternative hypothesis: true autocorrelation is not 0</code></pre>
 <span id="cb77-14"><a href="#cb77-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
 <span id="cb77-15"><a href="#cb77-15" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb77-16"><a href="#cb77-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">acf</span>(<span class="fu">resid</span>(m, <span class="at">type=</span><span class="st">"normalized"</span>), <span class="at">main=</span>current_name)</span>
-<span id="cb77-17"><a href="#cb77-17" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb77-18"><a href="#cb77-18" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb77-17"><a href="#cb77-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb77-18"><a href="#cb77-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">qqPlot</span>(r)</span>
+<span id="cb77-19"><a href="#cb77-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb77-20"><a href="#cb77-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb77-21"><a href="#cb77-21" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb77-22"><a href="#cb77-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb77-23"><a href="#cb77-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb77-24"><a href="#cb77-24" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
@@ -2290,6 +2310,38 @@ alternative hypothesis: true autocorrelation is not 0</code></pre>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <p><img src="TP_final_files/figure-html/analysis-10.png" class="img-fluid" width="576"></p>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="TP_final_files/figure-html/analysis-11.png" class="img-fluid" width="576"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="TP_final_files/figure-html/analysis-12.png" class="img-fluid" width="576"></p>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="TP_final_files/figure-html/analysis-13.png" class="img-fluid" width="576"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="TP_final_files/figure-html/analysis-14.png" class="img-fluid" width="576"></p>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="TP_final_files/figure-html/analysis-15.png" class="img-fluid" width="576"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="TP_final_files/figure-html/analysis-16.png" class="img-fluid" width="576"></p>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="TP_final_files/figure-html/analysis-17.png" class="img-fluid" width="576"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="TP_final_files/figure-html/analysis-18.png" class="img-fluid" width="576"></p>
 </div>
 </div>
 </div>
@@ -2439,9 +2491,117 @@ Degrees of freedom: 75 total; 68 residual</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Modelos seleccionados</span></span>
 <span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>m_SSS2 <span class="ot">=</span> <span class="fu">gls</span>(<span class="at">model =</span> riqueza <span class="sc">~</span> <span class="fu">poly</span>(SSS, <span class="dv">2</span>)   ,<span class="at">data =</span> datos, <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>source),<span class="at">correlation =</span> <span class="fu">corCAR1</span>(<span class="at">form =</span> <span class="sc">~</span> dist<span class="sc">|</span>source))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>m_SSS2 <span class="ot">=</span> <span class="fu">gls</span>(<span class="at">model =</span> riqueza <span class="sc">~</span> <span class="fu">poly</span>(SSS, <span class="dv">2</span>)   ,<span class="at">data =</span> datos, <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>source),<span class="at">correlation =</span> <span class="fu">corCAR1</span>(<span class="at">form =</span> <span class="sc">~</span> dist<span class="sc">|</span>source))</span>
+<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-5"><a href="#cb90-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m_SSS2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Generalized least squares fit by REML
+  Model: riqueza ~ poly(SSS, 2) 
+  Data: datos 
+    AIC BIC logLik
+  388.4 402 -188.2
+
+Correlation Structure: Continuous AR(1)
+ Formula: ~dist | source 
+ Parameter estimate(s):
+      Phi 
+9.636e-15 
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | source 
+ Parameter estimates:
+transitorio     estable 
+     1.0000      0.5314 
+
+Coefficients:
+               Value Std.Error t-value p-value
+(Intercept)    17.17     0.399   43.09       0
+poly(SSS, 2)1 -18.22     3.813   -4.78       0
+poly(SSS, 2)2  21.09     3.503    6.02       0
+
+ Correlation: 
+              (Intr) p(SSS,2)1
+poly(SSS, 2)1 -0.463          
+poly(SSS, 2)2  0.371 -0.463   
+
+Standardized residuals:
+     Min       Q1      Med       Q3      Max 
+-2.11684 -0.57992  0.03228  0.54537  2.75644 
+
+Residual standard error: 4.91 
+Degrees of freedom: 75 total; 72 residual</code></pre>
 </div>
-<pre><code></code></pre>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m_gamma)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Generalized least squares fit by REML
+  Model: riqueza ~ gamma 
+  Data: datos 
+    AIC   BIC logLik
+  401.2 412.7 -195.6
+
+Correlation Structure: Continuous AR(1)
+ Formula: ~dist | source 
+ Parameter estimate(s):
+    Phi 
+5.9e-35 
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | source 
+ Parameter estimates:
+transitorio     estable 
+     1.0000      0.6161 
+
+Coefficients:
+             Value Std.Error t-value p-value
+(Intercept) 22.353     1.102  20.282       0
+gamma       -6.748     1.142  -5.908       0
+
+ Correlation: 
+      (Intr)
+gamma -0.941
+
+Standardized residuals:
+    Min      Q1     Med      Q3     Max 
+-1.9747 -0.6933 -0.1069  0.7764  2.3063 
+
+Residual standard error: 4.662 
+Degrees of freedom: 75 total; 73 residual</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggeffects)</span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb94-3"><a href="#cb94-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb94-4"><a href="#cb94-4" aria-hidden="true" tabindex="-1"></a>pred_salinidad <span class="ot">&lt;-</span> <span class="fu">ggpredict</span>(<span class="fu">update</span>(m_SSS2,<span class="at">correlation =</span> <span class="cn">NULL</span>), <span class="at">terms =</span> <span class="fu">c</span>(<span class="st">"SSS [all]"</span>))</span>
+<span id="cb94-5"><a href="#cb94-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pred_salinidad)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="TP_final_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a>pred_gamma <span class="ot">&lt;-</span> <span class="fu">ggpredict</span>(<span class="fu">update</span>(m_gamma,<span class="at">correlation =</span> <span class="cn">NULL</span>))</span>
+<span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pred_gamma)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="TP_final_files/figure-html/unnamed-chunk-25-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>pred_salinidad <span class="ot">&lt;-</span> <span class="fu">ggpredict</span>(<span class="fu">update</span>(m_Chl3ySSS2,<span class="at">correlation =</span> <span class="cn">NULL</span>), <span class="at">terms =</span> <span class="fu">c</span>(<span class="st">"SSS [all]"</span>, <span class="st">"Chl [5,18]"</span>))</span>
+<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pred_salinidad)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="TP_final_files/figure-html/unnamed-chunk-25-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 </section>
 

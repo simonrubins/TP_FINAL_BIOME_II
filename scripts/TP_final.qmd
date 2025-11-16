@@ -551,7 +551,7 @@ testTemporalAutocorrelation(
 )
 ```
 
-### Modelos Ditancia alternativa 
+### Modelos Ditancia alternativa
 
 ```{r}
 datos_crudos <-read.csv("../datos/complete_data.csv", header=T)
@@ -719,12 +719,20 @@ for (current_name in model_names) {
 ### Modelos Finales
 
 ```{r}
+
+
+m_SSS2ygamma = gls(model = riqueza ~ scale(SSS) + I(scale(SSS)^2) + gamma, 
+             data = datos, 
+             weights = varIdent(form = ~1|source) ,correlation = corCAR1(form = ~ dist|source))
+
+
 modelos_finales <- list(
   "Nulo" = m_Nulo,
-  "gamma" = m_gamma,
+  "Tamaño Particulas" = m_gamma,
   "m_gamma_sinMatriz" = m_gamma_sinMatriz,
   "SSS^2" = m_SSS2,
-  "m_SSS2_sinMatriz" = m_SSS2_sinMatriz
+  "m_SSS2_sinMatriz" = m_SSS2_sinMatriz,
+  "SSS^2 + Gamma" = m_SSS2ygamma
 )
 
 aic_values <- sapply(modelos_finales, AIC)
@@ -796,12 +804,18 @@ for (current_name in model_names) {
   abline(h = 0, col = "red", lty = 2)
   
   acf(resid(m, type="normalized"), main=current_name)
+  
+  qqPlot(r)
+  
+  
+ 
+  
     
 }
 
 ```
 
-```{}
+```         
 ```
 
 ```{r}
@@ -863,8 +877,51 @@ ggplot(datos, aes(x=SSS, y= SST)) +
 
 m_SSS2 = gls(model = riqueza ~ poly(SSS, 2)   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
 
+summary(m_SSS2)
 
 ```
 
-```         
+```{r}
+summary(m_gamma)
+```
+
+```{r}
+check_model(m_SSS2)
+check_model(m_gamma)
+```
+
+```{r}
+library(ggeffects)
+
+
+pred_salinidad <- ggpredict(update(m_SSS2,correlation = NULL), terms = c("SSS [all]"))
+plot(pred_salinidad)
+
+
+pred_gamma <- ggpredict(update(m_gamma,correlation = NULL))
+plot(pred_gamma)
+
+
+
+confint(m_SSS2)
+
+confint(m_gamma)
+
+min = min(pred_salinidad$predicted)
+
+pred_salinidad [which(pred_salinidad$predicted ==  min)]
+
+
+
+
+m_raw <- gls(
+  riqueza ~ poly(SSS, 2, raw = TRUE),
+  data = datos,
+  weights = varIdent(form = ~1|source),
+  correlation = corCAR1(form = ~ distm|source)
+)
+
+summary(m_raw)
+
+summary(m_SSS2_sinMatriz)
 ```
