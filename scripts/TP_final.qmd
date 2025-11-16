@@ -20,6 +20,7 @@ library(ggplot2)
 library(tidyr)
 library(car) 
 library(DHARMa)
+library(lme4)
 ```
 
 ## Contexto
@@ -29,8 +30,8 @@ Estudiar comunidad del plancton microbiano en el atlántico Sudoccidental Sur. E
 ## Analisis Exploratorio Datos
 
 ```{r}
-datos<-read.csv("../datos/complete_data.csv", header=T)
-summary(datos)
+datos_crudos <-read.csv("../datos/complete_data.csv", header=T)
+summary(datos_crudos)
 
 ####DISTANCIA####
 # Coordenadas iniciales por localidad
@@ -41,7 +42,7 @@ ref_points <- data.frame(
 )
 
 # Calcular distancia al punto inicial de cada localidad
-datos <- datos %>%
+datos_crudos <- datos_crudos %>%
   left_join(ref_points, by = "source") %>%
   mutate(
     dist_m = distHaversine(
@@ -51,7 +52,7 @@ datos <- datos %>%
     dist = dist_m / 1000
   )
 
-datos = datos[, -c(2,3,12:14 )]
+datos = datos_crudos[, -c(2,3,12:14 )]
 ```
 
 Cambiamos los nombres a los frentes
@@ -403,6 +404,15 @@ m_SSS2xgamma = gls(model = riqueza ~ poly(SSS, 2) * gamma   ,data = datos, weigh
 
 m_SSSxgamma = gls(model = riqueza ~ SSS * gamma   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
 
+m_SSS2_sinMatriz = gls(model = riqueza ~ scale(SSS) + I(scale(SSS)^2),
+             data = datos, 
+             weights = varIdent(form = ~1|source))
+
+
+m_gamma_sinMatriz= gls(model = riqueza ~ scale(gamma),
+             data = datos, 
+             weights = varIdent(form = ~1|source))
+
 
 modelos_sinSource <- list(
   "Nulo" = m_Nulo,
@@ -419,8 +429,9 @@ modelos_sinSource <- list(
   "gamma^2" = m_gamma2,
   "gamma^3" = m_gamma3,
   "SSS2 * gamma" = m_SSS2xgamma,
-  "m_SSSxgamma" = m_SSSxgamma
-
+  "m_SSSxgamma" = m_SSSxgamma,
+  "m_SSS2_sinMatriz" = m_SSS2_sinMatriz,
+  "m_gamma_sinMatriz" = m_gamma_sinMatriz
 )
 
 aic_values <- sapply(modelos_sinSource, AIC)
@@ -430,6 +441,12 @@ phi_values <- sapply(modelos_sinSource, function(m) {
   
   # Get the correlation structure
   cor_struct <- coef(m$modelStruct$corStruct, unconstrained = FALSE)
+  
+  if (is.null(cor_struct)){
+  cor_struct = 1
+  } 
+  
+  return(cor_struct)
   
 })
 
@@ -457,7 +474,6 @@ results_table <- data.frame(
 
 library(knitr)
 
-summary(m_SSS3xgamma)
 
 kable(results_table, 
       digits = 3, 
@@ -497,12 +513,299 @@ summary(m_Chl3xSSS2)
 Anova(m_Chl3xSSS2)
 ```
 
+### Volviendo al Poisson
+
+Considerando sin matriz de correlación porque datos son practicamente independientes
+
+datos\$dist\[51\] = 0.001
+
+```{r}
+library(glmmTMB)
+modelo_3<-glmmTMB(riqueza ~ SSS + SST + POC  + gamma,
+                  family = compois,
+                  data = datos)
+
+
+  
+  library(DHARMa)
+
+  
+  simRes <- simulateResiduals(fittedModel = modelo_3)
+  
+  
+testSpatialAutocorrelation(
+  simulationOutput = simRes,
+  x = datos_crudos$lat,     # Tu columna de coordenada X o Longitud
+  y = datos_crudos$lon,     # Tu columna de coordenada Y o Latitud
+  plot = TRUE
+)
+
+
+indices_cero <- which(datos$dist == 0)
+datos$dist[1] <- 0.0001
+
+testTemporalAutocorrelation(
+  simulationOutput = simRes,
+  time = datos$dist,  # Usamos 'dist' como el vector de ordenamiento
+  plot = TRUE
+)
+```
+
+### Modelos Ditancia alternativa 
+
+```{r}
+datos_crudos <-read.csv("../datos/complete_data.csv", header=T)
+
+####DISTANCIA####
+# Coordenadas iniciales por localidad
+ref_points <- data.frame(
+  source = c("bloom", "talud"),
+  ref_lat = c(-48.2656, -48.2656),
+  ref_lon = c(-63.7595, -63.7595)
+)
+
+# Calcular distancia al punto inicial de cada localidad
+datos_crudos <- datos_crudos %>%
+  left_join(ref_points, by = "source") %>%
+  mutate(
+    dist_m = distHaversine(
+      p1 = cbind(ref_lon, ref_lat),
+      p2 = cbind(lon, lat)
+    ),
+    dist = dist_m / 1000
+  )
+
+datos_alternativos = datos_crudos[, -c(2,3,12:14 )]
+
+
+modelo_3<-glmmTMB(riqueza ~ SSS + SST + POC  + gamma,
+                  family = compois,
+                  data = datos_alternativos)
+
+summary(modelo_3)
+
+  
+  library(DHARMa)
+
+  
+  simRes <- simulateResiduals(fittedModel = modelo_3)
+  
+  
+testSpatialAutocorrelation(
+  simulationOutput = simRes,
+  x = datos_crudos$lat,     # Tu columna de coordenada X o Longitud
+  y = datos_crudos$lon,     # Tu columna de coordenada Y o Latitud
+  plot = TRUE
+)
+
+
+
+testTemporalAutocorrelation(
+  simulationOutput = simRes,
+  time = datos_alternativos$dist,  # Usamos 'dist' como el vector de ordenamiento
+  plot = TRUE
+)
+
+```
+
+```{r}
+
+m_Nulo_alt = gls(model = riqueza ~ 1 , weights = varIdent(form = ~1|source) , data = datos_alternativos,correlation = corCAR1(form = ~ dist|source))
+
+m_gamma_alt =gls(model = riqueza ~ gamma   ,data = datos_alternativos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_SSS2_alt = gls(model = riqueza ~ scale(SSS) + I(scale(SSS)^2),
+             data = datos_alternativos, 
+             weights = varIdent(form = ~1|source) ,correlation = corCAR1(form = ~ dist|source))
+
+
+m_SSS2_sinMatriz_alt = gls(model = riqueza ~ scale(SSS) + I(scale(SSS)^2),
+             data = datos_alternativos, 
+             weights = varIdent(form = ~1|source))
+
+
+m_gamma_sinMatriz_alt= gls(model = riqueza ~ scale(gamma),
+             data = datos_alternativos, 
+             weights = varIdent(form = ~1|source) ,correlation = corCAR1(form = ~ dist|source))
+
+
+modelos_alternativos <- list(
+  "Nulo" = m_Nulo,
+  "Nulo alt" = m_Nulo_alt,
+  "gamma" = m_gamma,
+  "gamma alt" = m_gamma_alt,
+  "m_gamma_sinMatriz" = m_gamma_sinMatriz,
+  "SSS^2" = m_SSS2,
+  "SSS^2 alt" = m_SSS2_alt,
+  "m_SSS2_sinMatriz" = m_SSS2_sinMatriz,
+  "m_SSS2_sinMatriz_alt" = m_SSS2_sinMatriz_alt
+)
+
+
+```
+
+```{r}
+aic_values <- sapply(modelos_alternativos, AIC)
+bic_values <- sapply(modelos_alternativos, BIC)
+rse_values <- sapply(modelos_alternativos, sigma)
+phi_values <- sapply(modelos_alternativos, function(m) {
+  
+  # Get the correlation structure
+  cor_struct <- coef(m$modelStruct$corStruct, unconstrained = FALSE)
+  
+  if (is.null(cor_struct)){
+  cor_struct = 1
+  } 
+  
+  return(cor_struct)
+  
+})
+
+p_value_last_coef <- sapply(modelos_alternativos, function(m) {
+  
+  # Get the coefficient table from the summary
+  tTable <- summary(m)$tTable
+  
+  # Get the number of rows (which is the last coefficient)
+  last_row <- nrow(tTable)
+  
+  # Get the p-value from that last row
+  p_val <- tTable[last_row, "p-value"]
+  
+  return(p_val)
+})
+
+results_table <- data.frame(
+  Phi = phi_values,
+  SE = rse_values,
+  AIC = aic_values,
+  BIC = bic_values,
+  P_valor = p_value_last_coef
+)
+
+library(knitr)
+
+
+kable(results_table, 
+      digits = 3, 
+      caption = "GLS Model Comparison") # <-- No format argument
+
+
+```
+
+```{r}
+#| label: alternativo
+#| layout-ncol: 2
+#| fig-width: 6
+#| fig-height: 5
+model_names <- names(modelos_alternativos)
+# sapply(modelos_sinSource, check_model) 
+
+for (current_name in model_names) {
+  
+  m <- modelos_alternativos[[current_name]]
+  
+  acf(resid(m, type="normalized"), main=current_name)
+    
+  r = residuals(m , type = "pearson")
+  predichos = predict(m)
+  
+  
+  plot(predichos , r , main = current_name)
+  abline(h = 0, col = "red", lty = 2)
+}
+```
+
+### Modelos Finales
+
+```{r}
+modelos_finales <- list(
+  "Nulo" = m_Nulo,
+  "gamma" = m_gamma,
+  "m_gamma_sinMatriz" = m_gamma_sinMatriz,
+  "SSS^2" = m_SSS2,
+  "m_SSS2_sinMatriz" = m_SSS2_sinMatriz
+)
+
+aic_values <- sapply(modelos_finales, AIC)
+bic_values <- sapply(modelos_finales, BIC)
+rse_values <- sapply(modelos_finales, sigma)
+phi_values <- sapply(modelos_finales, function(m) {
+  
+  # Get the correlation structure
+  cor_struct <- coef(m$modelStruct$corStruct, unconstrained = FALSE)
+  
+  if (is.null(cor_struct)){
+  cor_struct = 1
+  } 
+  
+  return(cor_struct)
+  
+})
+
+p_value_last_coef <- sapply(modelos_finales, function(m) {
+  
+  # Get the coefficient table from the summary
+  tTable <- summary(m)$tTable
+  
+  # Get the number of rows (which is the last coefficient)
+  last_row <- nrow(tTable)
+  
+  # Get the p-value from that last row
+  p_val <- tTable[last_row, "p-value"]
+  
+  return(p_val)
+})
+
+results_table <- data.frame(
+  Phi = phi_values,
+  SE = rse_values,
+  AIC = aic_values,
+  BIC = bic_values,
+  P_valor = p_value_last_coef
+)
+
+library(knitr)
+
+
+kable(results_table, 
+      digits = 3, 
+      caption = "GLS Model Comparison") # <-- No format argument
+
+
+```
+
+```{r}
+#| label: analysis
+#| layout-ncol: 2
+#| fig-width: 6
+#| fig-height: 5
+library(performance)
+
+
+model_names <- names(modelos_finales)
+
+for (current_name in model_names) {
+  
+  m <- modelos_finales[[current_name]]
+  
+  
+  r = residuals(m , type = "pearson")
+  predichos = predict(m)
+  plot(predichos , r , main = current_name)
+  abline(h = 0, col = "red", lty = 2)
+  
+  acf(resid(m, type="normalized"), main=current_name)
+    
+}
+
+```
+
+```{}
+```
+
 ```{r}
 library(ggeffects)
-
-str(datos)
-
-summary(datos)
 
 datos$riqueza = as.numeric(datos$riqueza)
 modelo_final =   gls(model = riqueza ~ scale(Chl)+ I(scale(Chl)^2) + I(scale(Chl)^3) +
@@ -510,7 +813,6 @@ modelo_final =   gls(model = riqueza ~ scale(Chl)+ I(scale(Chl)^2) + I(scale(Chl
              scale(Chl):scale(SSS) ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source) )
   
   
-summary(m_Chl3xSSS2)
 summary(modelo_final)
 
 pred_salinidad <- ggpredict(update(modelo_final,correlation = NULL), terms = c("SSS [all]", "Chl [5,18]"))
@@ -528,32 +830,32 @@ plot(pred_salinidad)
 
 
 
-linealidadPlot = function (var, nombre){
+
   
 ggplot(datos, aes(x=SSS, y= Chl)) + 
   geom_point(  size=3,  shape=19 ) +  
   xlab( "SSS" ) +  ylab("Chl") 
-}
+
 
 ggplot(datos, aes(x=SSS, y= gamma)) + 
   geom_point(  size=3,  shape=19 ) +  
   xlab( "SSS" ) +  ylab("gamma") 
-}
+
   
   ggplot(datos, aes(x=SSS, y= bbp)) + 
   geom_point(  size=3,  shape=19 ) +  
   xlab( "SSS" ) +  ylab("bbp") 
-}
+
   
 ggplot(datos, aes(x=SSS, y= POC)) + 
   geom_point(  size=3,  shape=19 ) +  
   xlab( "SSS" ) +  ylab("POC") 
-}
+
   
 ggplot(datos, aes(x=SSS, y= SST)) + 
   geom_point(  size=3,  shape=19 ) +  
   xlab( "SSS" ) +  ylab("SST") 
-}
+
 ```
 
 ```{r}
@@ -564,5 +866,5 @@ m_SSS2 = gls(model = riqueza ~ poly(SSS, 2)   ,data = datos, weights = varIdent(
 
 ```
 
-```{}
+```         
 ```
