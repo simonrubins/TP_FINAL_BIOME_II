@@ -58,13 +58,17 @@ Para estudiar cómo varía la diversidad en los frentes oceánicos, se utilizaro
 
 Se realizaron dos transectas, una atravesando el frente del talud continental (desde el talud, donde las aguas son más salobres y profundas) y otro sobre la plataforma, atravesando una floración fitoplanctónica de la plataforma continental. 
 
-	Para evaluar la diversidad, se utilizó la riqueza en 5ml de agua como variable respuesta. Luego, las variables explicativas medidas en la expedición fueron la salinidad, el tamaño de partículas.1, temperatura, bbp y la clorofila. Además de si es la transecta del talud o si es de la plataforma.
+```         
+Para evaluar la diversidad, se utilizó la riqueza en 5ml de agua como variable respuesta. Luego, las variables explicativas medidas en la expedición fueron la salinidad superficial (SSS[UPS]), el tamaño de partículas.1 (gamma), temperatura superficial (SST[°C]), indice de refractancia de las particulas (bbp[mg/m3)], la clorofila (Chl[mg/m3]) y el carbono orgánico particulado (POC[mg/m3]). Además de si se trataba de transecta realizada sobre el frente estable del talud continental o si era el transitorio de aguas internas de la plataforma. Por otro lado, se calcularon las distancias entre cada punto de muestreo utilizando el paquete geosphere (RJ. Hijmans, 2024, con el fin de evaluar la independencia de las observaciones, a partir de las coordenadas geográficas del velero.
+```
 
 Los registros de temperatura y salinidad fueron obtenidos mediante un termosalinógrafo instalado a bordo, y las estimaciones de concentración de clorofila “a” fueron obtenidas por un fluorómetro. 
 
  Las mediciones semicontinuas consistieron en observaciones de grupos planctónicos a través de un sistema que combina microfluídica y microscopía, denominado Imaging FlowCytobot (IFCB). Este instrumento captura imágenes microscópicas de partículas presentes en 5 mL de agua de mar, aproximadamente cada 30 minutos, y está optimizado para detectar organismos con diámetros entre 5 y 20 micrones. Las imágenes obtenidas se analizan posteriormente mediante la plataforma EcoTaxa.
 
-El análisis computacional fue realizado utilizando el entorno y lenguaje R (R Core Team, 2024). Además se utilizó un diverso número de paquetes como ggplot2 (H. Wickham, 2016)  para realizar gráficos exploratorios, geosphere (RJ. Hijmans, 2024) con el fin de obtener las distancias entre los puntos de muestreo a partir de su ubicación geográfica. El análisis de los residuales de los modelos con una distribución de probabilidades de Poisson se efectuaron utilizando el paquete 'DHARMa' (F. Hartig, 2020). 
+El análisis computacional fue realizado utilizando el entorno y lenguaje R (R Core Team, 2024). Además se utilizó un diverso número de paquetes como ggplot2 (H. Wickham, 2016)  para realizar gráficos exploratorios, geosphere (RJ. Hijmans, 2024) con el fin de obtener las distancias entre los puntos de muestreo a partir de su ubicación geográfica. El análisis de los residuales de los modelos con una distribución de probabilidades de Poisson se efectuaron utilizando el paquete 'DHARMa' (F. Hartig, 2020).
+
+####ESTO DE ACÁ ABAJO YA LO DICE EL TEXTO#### 
 
 Unidad de muestreo: Cada 5 ml de agua de la trayectoria del barco.
 
@@ -104,7 +108,7 @@ $$
  \ln( E ( \frac {Riqueza}{5 ~ ml ~ Agua}))_i = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST_i +  \beta_4 bbp_i  + \beta_5 Clorofila_i  + \beta_6 POC_i + \beta_7 Estable_i + \beta_8 Distancia_i 
 $$
 
-Como en GEE no existe una matriz de correación continua de distancias, asumimos una Autroregresiva.
+Como en GEE no existe una matriz de correación continua de distancias, asumimos una Autroregresiva, debido a que las distancias entre los puntos se mantienen relativamente constantes.
 
 ------------------------------------------------------------------------
 
