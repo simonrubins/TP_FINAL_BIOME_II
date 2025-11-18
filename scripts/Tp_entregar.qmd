@@ -1,11 +1,21 @@
 ---
-title: "Estudio de alta frecuencia de la riqueza microbiana entre 2 tipos de frentes oceanográficos"
-author: "Nicolás, Simón, Nicole, Gonzalo, Martina"
-format: html
+title: "Estudio de alta frecuencia de la riqueza del plancton microbiano en el Atlántico Sudoccidental Sur"
+author: "Nicolás Del Gobbo, Simón Rubinstein, Nicole Fabre, Gonzalo Coccolo, Martina Cortez"
+format: pdf
 editor: visual
 theme: cerulean
 output-dir: "asdasdasdasd"
 ---
+
+```{css, echo = FALSE}
+.justify {
+  text-align: justify !important
+}
+
+.figure figcaption {
+            text-align: center;
+}
+```
 
 ## 
 
@@ -20,12 +30,12 @@ library(car)
 library(DHARMa)
 library(lme4)
 library(geepack)
-```
 
-------------------------------------------------------------------------
+```
 
 # Introducción
 
+::: justify
 Las aguas oceánicas de la capa eufótica están pobladas por microorganismos planctónicos que sostienen las redes tróficas marinas y modulan ciclos biogeoquímicos globales (Falkowski et al., 2008). Sus comunidades son transportadas pasivamente por las corrientes, cuyas condiciones físico-químicas pueden alterar las abundancias celulares de los microorganismos. Comprender cómo varían estas comunidades a lo largo de gradientes ambientales es una pregunta central en ecología microbiana marina y, a su vez, representa un desafío particular ya que la naturaleza dinámica del fluido marino no permite distinguir fácilmente los efectos relativos de las dimensiones espacial y temporal.
 
 A escala planetaria, estas comunidades unicelulares están influenciadas por diferencias de temperatura y radiación solar a lo largo del gradiente latitudinal, así como por grandes patrones de mezcla, estratificación y disponibilidad de nutrientes, los cuales dependen de la ubicación relativa a los continentes, los giros oceánicos subtropicales y las principales corrientes marinas, cada uno con sus propias variaciones estacionales e interanuales. En la mesoescala, los frentes marinos y los remolinos de entre 10-100 km de extensión modifican las condiciones del medio marino por períodos de semanas a meses, mientras que procesos vinculados a estructuras menores de una magnitud de 1-10 km (aquellas denominadas de sub-mesoescala) pueden influir como forzantes ecológicos por lapsos de horas a días. Las tasas de renovación de biomasa y de composición comunitaria integran señales provenientes de todas estas escalas (Levy et al., 2015).
@@ -33,82 +43,60 @@ A escala planetaria, estas comunidades unicelulares están influenciadas por dif
 Dentro de este marco, el sector sudoccidental del Atlántico Sur (SOAS) representa un sistema ideal para estudiar cómo distintos forzantes estructuran comunidades planctónicas a lo largo de sus marcados gradientes ambientales. Al sur del 40°S, y adyacente al continente sudamericano, se sitúa la Plataforma Patagónica, una región de alta productividad primaria y biodiversidad (Rivas et al., 2006). Desde el sur ingresan aguas subantárticas de baja salinidad, influenciadas por el aporte de masas de agua procedentes del Estrecho de Magallanes, originadas en las zonas de alta precipitación al oeste de la cordillera (Piola et al., 2018). La plataforma presenta una batimetría amplia y relativamente plana, que se interrumpe bruscamente hacia los 200 m de profundidad, dando paso a un talud que desciende hasta los 4000 m. A lo largo del talud, en dirección N-NE, circula la Corriente de Malvinas, la cual es un desprendimiento de la Corriente Circumpolar Antártica. Esta corriente fría y rica en macronutrientes posee una salinidad relativamente mayor que las aguas de plataforma, generando un frente termohalino permanente pero de intensidad moderada.
 
 El SOAS se caracteriza por una fuerte estacionalidad, con floraciones fitoplanctónicas extensas entre la primavera y el verano. De forma general, estas floraciones ocurren al norte de 45°S entre septiembre y noviembre, y al sur entre noviembre y enero (Romero et al., 2006). Durante este período productivo suele observarse una sucesión de grupos dominantes, incluyendo diatomeas, dinoflagelados y pequeños flagelados como los cocolitofóridos (Guinder et al., 2024). Sin embargo, imágenes satelitales y campañas recientes revelan un escenario más heterogéneo —especialmente en aguas de plataforma— con múltiples parches en mesoescala dominados por una o pocas especies (Ferronato et al., 2025). Para atribuir cambios comunitarios a diferencias espaciales en un entorno físicamente tan dinámico, es necesario contar con alta densidad o frecuencia de muestreo en el espacio y en el tiempo.
-
-------------------------------------------------------------------------
+:::
 
 ## Objetivos
 
+::: justify
 Se propone estudiar los cambios en la riqueza de las comunidades de plancton microbiano a lo largo de los frentes del talud continental y de transición a una floración fitoplanctónica, a partir de la salinidad superficial y el tamaño de los organismos que componen a la comunidad. Se analizarán las variaciones en las comunidades, tanto en la mesoescala como en la submesoescala.
+:::
 
 ### Hipótesis
 
+::: justify
 La riqueza se ve afectada tanto por la salinidad como por las estructuras de las comunidades. De esta forma, las condiciones asociadas a los frentes de mesoescala presentan una menor riqueza con una dominancia de especies especialistas, mientras que, las que modelan de forma moderada a los frentes de submesoescala, están asociadas a una mayor riqueza.
+:::
 
 ### Predicciones
 
-Se espera encontrar una mayor riqueza asociada a aguas internas de la plataforma, las cuales presentan alteraciones moderadas en sus condiciones, con una salinidad relativamente baja y un mayor tamaño de organismos. 
+::: justify
+Se espera encontrar una mayor riqueza asociada a aguas internas de la plataforma, las cuales presentan alteraciones moderadas en sus condiciones, con una salinidad relativamente baja y un mayor tamaño de organismos.
 
 Además, se espera que la riqueza sea menor en aguas del talud, del lado este del frente, donde la salinidad es máxima y la comunidad está dominada, al momento del muestreo, por organismos pequeños como los cocolitofóridos y en menor parte los dinoflagelados desnudos.
-
-------------------------------------------------------------------------
+:::
 
 ## Metodología
 
-Para estudiar cómo varía la diversidad en los frentes oceánicos, se utilizaron datos provenientes de una campaña de muestreo de tres semanas realizada en diciembre de 2021 a bordo de la goleta científica Tara. El muestreo combinó mediciones continuas y semicontinuas obtenidas mediante el bombeo de agua superficial hacia instrumentos instalados a bordo, junto con estaciones discretas para recolectar muestras de agua y biomasa a distintas profundidades. 
+::: justify
+Para estudiar cómo varía la diversidad en los frentes oceánicos, se utilizaron datos provenientes de una campaña de muestreo de tres semanas realizada en diciembre de 2021 a bordo de la goleta científica Tara. El muestreo combinó mediciones continuas y semicontinuas obtenidas mediante el bombeo de agua superficial hacia instrumentos instalados a bordo, junto con estaciones discretas para recolectar muestras de agua y biomasa a distintas profundidades.
 
 Se realizaron dos transectas, una atravesando el frente del talud continental (desde el talud, donde las aguas son más salobres y profundas) y otro sobre la plataforma, atravesando una floración fitoplanctónica de la plataforma continental. 
 
-```         
-Para evaluar la diversidad, se utilizó la riqueza en 5ml de agua como variable respuesta. Luego, las variables explicativas medidas en la expedición fueron la salinidad superficial (SSS[UPS]), el tamaño de partículas.1 (gamma), temperatura superficial (SST[°C]), indice de refractancia de las particulas (bbp[mg/m3)], la clorofila (Chl[mg/m3]) y el carbono orgánico particulado (POC[mg/m3]). Además de si se trataba de transecta realizada sobre el frente estable del talud continental o si era el transitorio de aguas internas de la plataforma. Por otro lado, se calcularon las distancias entre cada punto de muestreo utilizando el paquete geosphere (RJ. Hijmans, 2024, con el fin de evaluar la independencia de las observaciones, a partir de las coordenadas geográficas del velero.
-```
+Para evaluar la diversidad, se utilizó la riqueza en 5ml de agua como variable respuesta. Luego, las variables explicativas medidas en la expedición fueron la salinidad superficial (SSS\[UPS\]), el tamaño de partículas $^{-1}$ (gamma), temperatura superficial (SST\[°C\]), indice de refractancia de las particulas (bbp\[mg/m3)\], la clorofila (Chl\[mg/m3\]) y el carbono orgánico particulado (POC\[mg/m3\]). Además de si se trataba de transecta realizada sobre el frente estable del talud continental o si era el transitorio de aguas internas de la plataforma. Por otro lado, se calcularon las distancias entre cada punto de muestreo utilizando el paquete geosphere (RJ. Hijmans, 2024 ), con el fin de evaluar la independencia de las observaciones, a partir de las coordenadas geográficas del velero.
 
-Los registros de temperatura y salinidad fueron obtenidos mediante un termosalinógrafo instalado a bordo, y las estimaciones de concentración de clorofila “a” fueron obtenidas por un fluorómetro. 
+Los registros de temperatura y salinidad fueron obtenidos mediante un termosalinógrafo instalado a bordo, y las estimaciones de concentración de clorofila “a” fueron obtenidas por un fluorómetro.
 
- Las mediciones semicontinuas consistieron en observaciones de grupos planctónicos a través de un sistema que combina microfluídica y microscopía, denominado Imaging FlowCytobot (IFCB). Este instrumento captura imágenes microscópicas de partículas presentes en 5 mL de agua de mar, aproximadamente cada 30 minutos, y está optimizado para detectar organismos con diámetros entre 5 y 20 micrones. Las imágenes obtenidas se analizan posteriormente mediante la plataforma EcoTaxa.
+Las mediciones semicontinuas consistieron en observaciones de grupos planctónicos a través de un sistema que combina microfluídica y microscopía, denominado Imaging FlowCytobot (IFCB). Este instrumento captura imágenes microscópicas de partículas presentes en 5 mL de agua de mar, aproximadamente cada 30 minutos, y está optimizado para detectar organismos con diámetros entre 5 y 20 micrones. Las imágenes obtenidas se analizan posteriormente mediante la plataforma EcoTaxa.
 
-El análisis computacional fue realizado utilizando el entorno y lenguaje R (R Core Team, 2024). Además se utilizó un diverso número de paquetes como ggplot2 (H. Wickham, 2016)  para realizar gráficos exploratorios, geosphere (RJ. Hijmans, 2024) con el fin de obtener las distancias entre los puntos de muestreo a partir de su ubicación geográfica. El análisis de los residuales de los modelos con una distribución de probabilidades de Poisson se efectuaron utilizando el paquete 'DHARMa' (F. Hartig, 2020).
+El análisis computacional fue realizado utilizando el entorno y lenguaje R (R Core Team, 2024). Además se utilizó un diverso número de paquetes como ggplot2 (H. Wickham, 2016) para realizar gráficos exploratorios. El análisis de los residuales de los modelos con una distribución de probabilidades de Poisson se efectuaron utilizando el paquete 'DHARMa' (F. Hartig, 2020).
+:::
 
-####ESTO DE ACÁ ABAJO YA LO DICE EL TEXTO#### 
+#### Modelo Inicial
 
-Unidad de muestreo: Cada 5 ml de agua de la trayectoria del barco.
+::: justify
+Debido a que la riqueza en 5ml es un conteo de taxones en un continuo, presentando una cota inferior pero no superior, se propone que sigue una distribución de probabilidades de tipo Poisson.
 
-Variables **Explicatorias:** (Cuantitativas continuas y distribución aleatoria, normal)
-
--   Salinidad Superficial: SSS (UPS)
-
--   Temperatura Superficial: SST (°C)
-
--   Tamaño de particulas inverso: gamma
-
--   Índice de refractancia de las partículas: bbp (mg/m3)
-
--   Clorofila (mg/m3)
-
--   Carbono orgánico particulado: POC (mg/m3)
-
-Variable Explicatorias cualitativas:
-
--   Frente: 2 niveles (transitorio y estable)
-
-Variable efectos **aleatorios**:
-
--   Distancia: Debido a la falta de independencia de las medidas por el espacio, hay que incorporar la distancia en el modelo para evitar la pseudoreplicación. Como no nos interesa en nuestra hipotesis y además suponemos una disminución de autocorrelación con la distancia, se decidio incorporarlo en un análisis **marginal** con un modelo autoregresivo continuo donde la correlación disminuye a mayores distancias..
-
-Variable **Respuesta:**
-
--   Riqueza ( Numero Sps distintas ) / 5 ml de agua . Cota inferior ( 0 , + ∞) \~ Distribución Poisson
-
-Replicas: 25 Para frente estable, 50 para transitorio
-
-#### Modelo Inicial GEE
-
-Abordaremos un diseño de mididas repetidas en el **espacio**, donde modelaremos la falta de independencia de los datos con una matriz de covarianzas. Es un modelo generalizado lineal ya que la VR tiene una distribución Poisson y se usan medidas repetidas. (GEE)
+Como los datos se toman en una serie espacial, no se puede asumir independencia entre las muestras. Por ende abordaremos un modelo marginal con un diseño de medidas repetidas en el **espacio**, donde la falta de independencia de los datos con una matriz de covarianzas. Este es un modelo generalizado lineal, ya que la variable respuesta tiene una distribución Poisson y se usan medidas repetidas (GEE).
+:::
 
 $$
+\begin{gather}
  \ln( E ( \frac {Riqueza}{5 ~ ml ~ Agua}))_i = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST_i +  \beta_4 bbp_i  + \beta_5 Clorofila_i  + \beta_6 POC_i + \beta_7 Estable_i + \beta_8 Distancia_i 
+ \\ (\frac  {Riqueza}{5 ~ ml ~ Agua})_i   \sim Poisson ( \lambda_i)
+ \end{gather}
 $$
 
-Como en GEE no existe una matriz de correación continua de distancias, asumimos una Autroregresiva, debido a que las distancias entre los puntos se mantienen relativamente constantes.
+Como en GEE no existe una matriz de correlación continua de distancias, asumimos una autroregresiva de orden uno, debido a que las distancias entre los puntos se mantienen relativamente constantes.
 
 ------------------------------------------------------------------------
 
@@ -116,7 +104,7 @@ Como en GEE no existe una matriz de correación continua de distancias, asumimos
 
 ### Transformación datos
 
-Pasamos las latitudes y longitudes a distancias, tomando un punto de cada fuente como referencia.
+Para comenzar, se pasaron las latitudes y longitudes a distancias, tomando un punto de cada fuente como referencia y renombramos los frentes.
 
 ```{r}
 datos_crudos <-read.csv("../datos/complete_data.csv", header=T)
@@ -142,21 +130,19 @@ datos_crudos <- datos_crudos %>%
   )
 
 datos = datos_crudos[, -c(2,3,12:14 )]
-```
-
-Cambiamos los nombres a los frentes
-
-```{r}
 
 datos$source <- recode_factor(datos$source,
                               "bloom" = "transitorio",
                               "talud" = "estable")
+
 
 ```
 
 ### Analisis Exploratorio Datos
 
 #### Analiticamente
+
+Se realiza un resumen de las variables explicativas por cada frente, observando las medias y la cantidad de muestras en cada una.
 
 ```{r}
 resumen_frente <- datos %>%
@@ -166,7 +152,6 @@ resumen_frente <- datos %>%
     riqueza = mean(riqueza),
     salinidad = mean(SSS),
     chl = mean(Chl),
-    DE_chl= sd(Chl) , 
     POC = mean(POC),
     gamma = mean(gamma),
     SST = mean(SST),
@@ -180,7 +165,7 @@ knitr :: kable(resumen_frente,
 
 #### Graficamente
 
-Definiendo funciones
+Se explora la relación entre las variables exploratorias con la variable respuesta, separando para cada frente.
 
 ```{r}
 linealidadPlot = function (var, nombre){
@@ -198,25 +183,47 @@ ggplot(datos, aes(x={{var}}, y= riqueza,group = source , color = source)) +
 #| fig-width: 6
 #| fig-height: 5
 #| warning: false
-linealidadPlot(Chl,"Chl")
-linealidadPlot(POC,"POC")
-linealidadPlot(bbp,"bbp")
+linealidadPlot(Chl,"Clorofila [mg/m3]")
+linealidadPlot(POC,"POC [mg/m3]")
+linealidadPlot(bbp,"bbp [mg/m3]")
 linealidadPlot(gamma,"gamma")
-linealidadPlot(SST,"SST")
-linealidadPlot(SSS,"SSS")
+linealidadPlot(SST,"Temperatura Superficial [°C]")
+linealidadPlot(SSS,"Salinidad Superficial [UPS]")
+
 
 ```
 
 #### Correlacion
 
+Como las variables medidas se esperan que estén correlacionadas, se realizó un gráfico de correlación para evaluar la misma, separando por cada frente.
+
 ```{r}
+#| message: false
+#| warning: false
+#| fig-width: 10
+#| fig-height: 10
 
 library(GGally)
-# ggpairs(datos[3:10])
+ggpairs(datos[2:10], aes ( color = source))
+
+
+library(knitr)
+
+
+m0<-geeglm(formula= riqueza~Chl+SSS+source+gamma+bbp+POC+SST, family = poisson, data=datos,id=source,corstr = "ar1")
+
+kable(vif(m0), 
+      digits = 3, 
+      caption = "VIF") # <-- No format argument
+
 
 ```
 
+A partir de esto se observa una alta correlación entre las variables explicativas, por lo que es necesario realizar una selección criteriosa de los modelos.
+
 #### Modelo
+
+Para comenzar se realiza un modelo con todas las variables explicativas.
 
 ```{r}
 library(geepack)
@@ -230,38 +237,52 @@ m0<-geeglm(formula= riqueza~Chl+SSS+source+gamma+bbp+POC+SST, family = poisson, 
 
 ### Supuestos
 
-Dispersion
+#### Dispersion
+
+Se verifica la ausencia de sobre o subdispersión de los residuos de pearson.
 
 ```{r}
-vif(m0)
+#| message: false
+#| warning: false
+
 testDispersion(m0, type = "PearsonChisq")
 sim <- simulateResiduals(fittedMod = m0, plot = T)
 
 ```
 
-Se observa una subdipersion, por lo que hay que modelar la subdispersion con por ejemplo Conway- para evitar sobrestimar los errores estandares.
+::: justify
+Se observa subdipersion de los residuos, por lo que debe ser modelada con una distribución como Conway-Maxwell-Poisson para evitar sobrestimar los errores estándars.
 
-Sin embargo la libreria GEE no presenta alternativas para la familia Poisson que corrigan la subdispersion ( la documentacion dice la existencia de quasiPoisson pero no logramos hacer que funcione) por lo que nos quedamos sin posibilidad de modelar la subdispersión.
+Sin embargo, la librería GEE no presenta alternativas para la familia Poisson que corrijan la subdispersion ( la documentación dice la existencia de quasiPoisson pero no se logró que funcione) por lo que se descarta la posibilidad de modelar la subdispersión.
 
-Ante este problema dicidimos asumir que la distribución de probabilidades de la riqueza se azemeja a una distribución Normal ya una distribución Poisson con lambda \> 8 se asimila a una dsitribución Normal.
+Ante este problema, se decide asumir que la distribución de probabilidades de la riqueza se asemeja a una distribución Normal debido a que la distribución Poisson con \$\\lambda\$ mayor a ocho se aproxima a esta.
+:::
 
 ### Plan B
 
+#### Modelo Riqueza \~ Normal
+
 $$
- Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST_i +  \beta_4 bbp_i  + \beta_5 Clorofila_i  + \beta_6 POC_i + \beta_7 Estable_i + \beta_8 Distancia_i + \epsilon_i
+\begin{gather}
+  Riqueza_i = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST_i +  \beta_4 bbp_i  + \beta_5 Clorofila_i  + \beta_6 POC_i + \beta_7 Estable_i + \beta_8 Distancia_i + \epsilon_i
 \\ \epsilon_i \sim Normal(0,\sigma^2_{frente})
 \\ i : 1 -75
+\end{gather}
 $$
 
-Como en Poisson \> media \> varianza, la homocedasticidad es problematica al convertirlo de la Poission. Sin embaro, encontramos que Var Ident con una varianza para cada
+::: justify
+Como en Poisson mayor media equivale a mayor varianza, la homocedasticidad es problemática al convertirlo en Normal. Sin embaro, se encuentra que estimando una varianza para cada frente soluciona la falta de homocedasticidad. Se utilizó la función var Ident para el modelado de la varianza.
 
-Lugeo Probamos modelar la varianza ya que en Poisson \> media \> varianza, asumiimos un varPower o varExp. Sin embargo el mejor modelo termino siendo VarIdent con una varianza para cada source probablemente dado a que la riqueza esperada es distntia en cada frente y por la subdispersion.
+Asimismo se probaron var Power y var Exp pero los resultados no fueron satisfactorios debido a que no corrigen la heterocedasticidad. Además, el modelado de varianza por var Ident no presenta un aumento significativo de cantidad de parámetros estimados en comparación a los otros.
+:::
+
+# VER de agregar var Power y var Exp
 
 #### Seleccion de modelos
 
-Dado a la alta correlación entre las variables explicatorias decidimos por criterio de interes bioloógicoomparación
-
-Dado a la falta de linealidad de algunos modelos, se utilizaron polinomios y se seleccionaron los mejores.
+::: justify
+Dada la alta correlación entre las variables explicativas, se decide por criterio de interés biológico seleccionar a la salinidad superficial y el Tamaño inverso de partículas. Como estas dos presentan una correlación entre ellas, no serán utilizados en el mismo modelo, sino que se generaran dos distintos: uno explicará las variaciones de la riqueza a partir del ambiente, mientras el otro lo hará a partir de las condiciones intrínsecas de la comunidad. Debido a la falta de linealidad de la salinidad se utiliza un polinomio de grado dos para este modelo.
+:::
 
 ```{r}
 m_Nulo = gls(model = riqueza ~ 1 , weights = varIdent(form = ~1|source) , data = datos,correlation = corCAR1(form = ~ dist|source))
@@ -333,13 +354,22 @@ kable(results_table,
 
 ```
 
+Se puede observar como al combinar ambos modelos el AIC disminuye, por ende se analizó la salinidad superficial y el gamma de forma independiente por un interés biológico.
+
 ### Supuestos
+
+No se encuentra evidencias suficientes para rechazar los supuestos de linealidad de las variables explicativas con la variable respuesta, la normalidad de los residuos, la homocedasticidad de las varianzas y la independencia de los datos con el gráfico ACF.
 
 ```{r}
 #| label: alternativo
 #| layout-ncol: 2
 #| fig-width: 6
 #| fig-height: 5
+#| fig-cap: "Diagnóstico del modelo"
+#| fig-subcap: 
+#|   - "Gráfico de residuos de Pearson en función de los predichos."
+#|   - "Análisis de la función de autocorrelación (ACF) para el modelo nulo, y los modelos de riqueza tanto en función del tamaño de partículas inverso, como el cuadrático de salinidad superficial . Los tres modelos presentan la matriz de correlación explícita continua, autoregresiva de orden 1."
+#|   - "Gráfico de cuantiles observados en función de los cuantiles teóricos."
 library(performance)
 
 
@@ -356,48 +386,106 @@ for (current_name in model_names) {
   abline(h = 0, col = "red", lty = 2)
   
   acf(resid(m, type="normalized"), main=current_name)
+
   
   qqPlot(r)
   print(shapiro.test(r))
   
- 
-  
-    
-}
+ }
 ```
 
-```{r}
-#Modelos seleccionados
+## Resultados Finales
 
+```{r}
 summary(m_SSS2)
 
-```
 
-```{r}
 summary(m_gamma)
-```
-
-```{r}
-#check_model(m_SSS2)
-#check_model(m_gamma)
-```
-
-```{r}
-library(ggeffects)
-
-
-pred_salinidad <- ggpredict(update(m_SSS2,correlation = NULL), terms = c("SSS [all]"))
-#plot(pred_salinidad)
-
-
-pred_gamma <- ggpredict(update(m_gamma,correlation = NULL))
-#plot(pred_gamma)
-
-
 
 confint(m_SSS2)
 
 confint(m_gamma)
+```
+
+Para ambos modelos se encuentra que los estimadores son significativamente distintos de cero (p \< 0.05) y que poseen un Phi de covarianza muy bajo, cercano a cero. Sin embargo se decidió dejar la matriz de covarianzas ya que presentan mejor AIC que los mismos modelos sin considerarla.
+
+#### Ecuación estimada de la riqueza en función del tamaño de partículas inverso:
+
+$$
+Riqueza = 22.353 - 6.748*TamPart
+$$
+
+#### Ecuación estimada de la riqueza en función del tamaño de la salinidad superficial:
+
+$$
+Riqueza = 17.17 - 18.22*SSS + 21.09*SSS²
+$$
+
+Se observa una relación lineal negativa entre la salinidad y la riqueza a valores de salinidad bajos entre 33,2 - 33,5 UPS aproximadamente. Mientras que a valores medios y altos de salinidad, se observa una tendencia inversa dada por el término cuadrático. Sin embargo, los valores de riqueza no llegan a recomponerse quedando riquezas bajas en altas salinidades.
+
+```{r}
+#| fig-subcap: 
+#|   - "Relación esperada entre la riqueza (número de taxones) y el polinomio de grado 2 de la salinidad (UPS). Se muestra la relación con su banda de confianza (95%), representada con las regiones sombreadas."
+library(ggeffects)
+
+
+pred_salinidad <- ggpredict(update(m_SSS2,correlation = NULL), terms = c("SSS [all]"))
+plot(pred_salinidad )+
+  labs(
+    title = "",
+    x = "SSS [UPS]",
+  )
 
 
 ```
+
+Se observa una relación lineal negativa entre gamma y riqueza, donde por cada aumento unitario de tamaño de las partículas, la riqueza disminuye en promedio entre 4.509 y 8.987 numero de taxones, con un 95% de confianza.
+
+```{r}
+#| fig-subcap: 
+#|   - "Relación esperada entre la riqueza (número de taxones) y el tamaño de partículas inverso. Se muestra la recta estimada con su banda de confianza (95%), representada con las regiones sombreadas."
+
+
+
+
+
+pred_gamma <- ggpredict(update(m_gamma,correlation = NULL))
+plot(pred_gamma )+
+  labs(
+    title = "",
+    x = "gamma",
+  )
+
+```
+
+## Discusión y conclusiones
+
+::: justify
+Se observó que existe una relación, tanto entre la salinidad como con el tamaño de los organismos, con la riqueza de plancton de la misma.
+
+Por un lado, se notó que el número de especies varía según el polinomio cuadrado de la salinidad (UPS) (p\<0.05), con un mínimo en 33.61 UPS y presentando el máximo de número de taxones en aguas poco salobres, relacionadas con aguas internas de la plataforma.
+
+Además, la cantidad de taxones disminuyó linealmente a menores tamaños de organismos, cayendo en promedio 6.748 números de taxones por unidad de gamma. 
+
+De esta manera, se puede concluir que las comunidades presentes en las aguas internas de la plataforma continental poseerán una mayor riqueza, asociada a una menor salinidad y organismos más grandes; frente a las comunidades del talud, las cuales poseerán un menor número de taxones. 
+:::
+
+## Biblografia 
+
+Falkowski, P. G., Fenchel, T., & Delong, E. F. (2008). The microbial engines that drive Earth's biogeochemical cycles. Science, 320(5879), 1034-1039.
+
+Ferronato, C., Guinder, V. A., Rivarossa, M., Saraceno, M., Ibarbalz, F., Tillmann, U., ... & Flombaum, P. (2025). Insights into protistan plankton blooms in the highly dynamic Patagonian Shelf and adjacent ocean basin in the southwestern Atlantic. Journal of Geophysical Research: Oceans, 130(3), e2024JC021412.
+
+Guinder, V. A., Ferronato, C., Dogliotti, A. I., Segura, V., & Lutz, V. (2024). The phytoplankton of the Patagonian Shelf-break Front. The Patagonian Shelfbreak Front: Ecology, Fisheries, Wildlife Conservation, 49-72.
+
+Kraberg, A., Baumann, M., & Dürselen, C. D. (2010). Coastal phytoplankton: photo guide for Northern European seas. Pfeil.
+
+Lévy, M., Jahn, O., Dutkiewicz, S., Follows, M. J., & d'Ovidio, F. (2015). The dynamical landscape of marine phytoplankton diversity. Journal of the Royal Society Interface, 12(111), 20150481.
+
+Piola, A. R., Palma, E. D., Bianchi, A. A., Castro, B. M., Dottori, M., Guerrero, R. A., ... & Saraceno, M. (2018). Physical oceanography of the SW Atlantic Shelf: a review. Plankton ecology of the Southwestern Atlantic: from the subtropical to the subantarctic realm, 37-56.
+
+Rivas, A. L., Dogliotti, A. I., & Gagliardini, D. A. (2006). Seasonal variability in satellite-measured surface chlorophyll in the Patagonian Shelf. Continental Shelf Research, 26(6), 703-720.
+
+Romero, S. I., Piola, A. R., Charo, M., & Garcia, C. A. E. (2006). Chlorophyll‐a variability off Patagonia based on SeaWiFS data. Journal of Geophysical Research: Oceans, 111(C5).
+
+![](images/dharma.jpeg)

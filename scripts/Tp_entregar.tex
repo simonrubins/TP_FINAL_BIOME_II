@@ -1,0 +1,1359 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod]{scrartcl}
+
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else  
+    % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{241,243,245}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.40,0.45,0.13}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.28,0.35,0.67}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.46,0.62}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.07,0.07,0.07}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+\KOMAoption{captions}{tableheading}
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+
+\usepackage{bookmark}
+
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={Estudio de alta frecuencia de la riqueza del plancton microbiano en el Atlántico Sudoccidental Sur},
+  pdfauthor={Nicolás Del Gobbo, Simón Rubinstein, Nicole Fabre, Gonzalo Coccolo, Martina Cortez},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{Estudio de alta frecuencia de la riqueza del plancton microbiano
+en el Atlántico Sudoccidental Sur}
+\author{Nicolás Del Gobbo, Simón Rubinstein, Nicole Fabre, Gonzalo
+Coccolo, Martina Cortez}
+\date{}
+
+\begin{document}
+\maketitle
+
+
+\subsection{}\label{section}
+
+\section{Introducción}\label{introducciuxf3n}
+
+Las aguas oceánicas de la capa eufótica están pobladas por
+microorganismos planctónicos que sostienen las redes tróficas marinas y
+modulan ciclos biogeoquímicos globales (Falkowski et al., 2008). Sus
+comunidades son transportadas pasivamente por las corrientes, cuyas
+condiciones físico-químicas pueden alterar las abundancias celulares de
+los microorganismos. Comprender cómo varían estas comunidades a lo largo
+de gradientes ambientales es una pregunta central en ecología microbiana
+marina y, a su vez, representa un desafío particular ya que la
+naturaleza dinámica del fluido marino no permite distinguir fácilmente
+los efectos relativos de las dimensiones espacial y temporal.
+
+A escala planetaria, estas comunidades unicelulares están influenciadas
+por diferencias de temperatura y radiación solar a lo largo del
+gradiente latitudinal, así como por grandes patrones de mezcla,
+estratificación y disponibilidad de nutrientes, los cuales dependen de
+la ubicación relativa a los continentes, los giros oceánicos
+subtropicales y las principales corrientes marinas, cada uno con sus
+propias variaciones estacionales e interanuales. En la mesoescala, los
+frentes marinos y los remolinos de entre 10-100 km de extensión
+modifican las condiciones del medio marino por períodos de semanas a
+meses, mientras que procesos vinculados a estructuras menores de una
+magnitud de 1-10 km (aquellas denominadas de sub-mesoescala) pueden
+influir como forzantes ecológicos por lapsos de horas a días. Las tasas
+de renovación de biomasa y de composición comunitaria integran señales
+provenientes de todas estas escalas (Levy et al., 2015).
+
+Dentro de este marco, el sector sudoccidental del Atlántico Sur (SOAS)
+representa un sistema ideal para estudiar cómo distintos forzantes
+estructuran comunidades planctónicas a lo largo de sus marcados
+gradientes ambientales. Al sur del 40°S, y adyacente al continente
+sudamericano, se sitúa la Plataforma Patagónica, una región de alta
+productividad primaria y biodiversidad (Rivas et al., 2006). Desde el
+sur ingresan aguas subantárticas de baja salinidad, influenciadas por el
+aporte de masas de agua procedentes del Estrecho de Magallanes,
+originadas en las zonas de alta precipitación al oeste de la cordillera
+(Piola et al., 2018). La plataforma presenta una batimetría amplia y
+relativamente plana, que se interrumpe bruscamente hacia los 200 m de
+profundidad, dando paso a un talud que desciende hasta los 4000 m. A lo
+largo del talud, en dirección N-NE, circula la Corriente de Malvinas, la
+cual es un desprendimiento de la Corriente Circumpolar Antártica. Esta
+corriente fría y rica en macronutrientes posee una salinidad
+relativamente mayor que las aguas de plataforma, generando un frente
+termohalino permanente pero de intensidad moderada.
+
+El SOAS se caracteriza por una fuerte estacionalidad, con floraciones
+fitoplanctónicas extensas entre la primavera y el verano. De forma
+general, estas floraciones ocurren al norte de 45°S entre septiembre y
+noviembre, y al sur entre noviembre y enero (Romero et al., 2006).
+Durante este período productivo suele observarse una sucesión de grupos
+dominantes, incluyendo diatomeas, dinoflagelados y pequeños flagelados
+como los cocolitofóridos (Guinder et al., 2024). Sin embargo, imágenes
+satelitales y campañas recientes revelan un escenario más heterogéneo
+---especialmente en aguas de plataforma--- con múltiples parches en
+mesoescala dominados por una o pocas especies (Ferronato et al., 2025).
+Para atribuir cambios comunitarios a diferencias espaciales en un
+entorno físicamente tan dinámico, es necesario contar con alta densidad
+o frecuencia de muestreo en el espacio y en el tiempo.
+
+\subsection{Objetivos}\label{objetivos}
+
+Se propone estudiar los cambios en la riqueza de las comunidades de
+plancton microbiano a lo largo de los frentes del talud continental y de
+transición a una floración fitoplanctónica, a partir de la salinidad
+superficial y el tamaño de los organismos que componen a la comunidad.
+Se analizarán las variaciones en las comunidades, tanto en la mesoescala
+como en la submesoescala.
+
+\subsubsection{Hipótesis}\label{hipuxf3tesis}
+
+La riqueza se ve afectada tanto por la salinidad como por las
+estructuras de las comunidades. De esta forma, las condiciones asociadas
+a los frentes de mesoescala presentan una menor riqueza con una
+dominancia de especies especialistas, mientras que, las que modelan de
+forma moderada a los frentes de submesoescala, están asociadas a una
+mayor riqueza.
+
+\subsubsection{Predicciones}\label{predicciones}
+
+Se espera encontrar una mayor riqueza asociada a aguas internas de la
+plataforma, las cuales presentan alteraciones moderadas en sus
+condiciones, con una salinidad relativamente baja y un mayor tamaño de
+organismos.
+
+Además, se espera que la riqueza sea menor en aguas del talud, del lado
+este del frente, donde la salinidad es máxima y la comunidad está
+dominada, al momento del muestreo, por organismos pequeños como los
+cocolitofóridos y en menor parte los dinoflagelados desnudos.
+
+\subsection{Metodología}\label{metodologuxeda}
+
+Para estudiar cómo varía la diversidad en los frentes oceánicos, se
+utilizaron datos provenientes de una campaña de muestreo de tres semanas
+realizada en diciembre de 2021 a bordo de la goleta científica Tara. El
+muestreo combinó mediciones continuas y semicontinuas obtenidas mediante
+el bombeo de agua superficial hacia instrumentos instalados a bordo,
+junto con estaciones discretas para recolectar muestras de agua y
+biomasa a distintas profundidades.
+
+Se realizaron dos transectas, una atravesando el frente del talud
+continental (desde el talud, donde las aguas son más salobres y
+profundas) y otro sobre la plataforma, atravesando una floración
+fitoplanctónica de la plataforma continental.~
+
+Para evaluar la diversidad, se utilizó la riqueza en 5ml de agua como
+variable respuesta. Luego, las variables explicativas medidas en la
+expedición fueron la salinidad superficial (SSS{[}UPS{]}), el tamaño de
+partículas \(^{-1}\) (gamma), temperatura superficial (SST{[}°C{]}),
+indice de refractancia de las particulas (bbp{[}mg/m3){]}, la clorofila
+(Chl{[}mg/m3{]}) y el carbono orgánico particulado (POC{[}mg/m3{]}).
+Además de si se trataba de transecta realizada sobre el frente estable
+del talud continental o si era el transitorio de aguas internas de la
+plataforma. Por otro lado, se calcularon las distancias entre cada punto
+de muestreo utilizando el paquete geosphere (RJ. Hijmans, 2024 ), con el
+fin de evaluar la independencia de las observaciones, a partir de las
+coordenadas geográficas del velero.
+
+Los registros de temperatura y salinidad fueron obtenidos mediante un
+termosalinógrafo instalado a bordo, y las estimaciones de concentración
+de clorofila ``a'' fueron obtenidas por un fluorómetro.
+
+Las mediciones semicontinuas consistieron en observaciones de grupos
+planctónicos a través de un sistema que combina microfluídica y
+microscopía, denominado Imaging FlowCytobot (IFCB). Este instrumento
+captura imágenes microscópicas de partículas presentes en 5 mL de agua
+de mar, aproximadamente cada 30 minutos, y está optimizado para detectar
+organismos con diámetros entre 5 y 20 micrones. Las imágenes obtenidas
+se analizan posteriormente mediante la plataforma EcoTaxa.
+
+El análisis computacional fue realizado utilizando el entorno y lenguaje
+R (R Core Team, 2024). Además se utilizó un diverso número de paquetes
+como ggplot2 (H. Wickham, 2016) para realizar gráficos exploratorios. El
+análisis de los residuales de los modelos con una distribución de
+probabilidades de Poisson se efectuaron utilizando el paquete `DHARMa'
+(F. Hartig, 2020).
+
+\paragraph{Modelo Inicial}\label{modelo-inicial}
+
+Debido a que la riqueza en 5ml es un conteo de taxones en un continuo,
+presentando una cota inferior pero no superior, se propone que sigue una
+distribución de probabilidades de tipo Poisson.
+
+Como los datos se toman en una serie espacial, no se puede asumir
+independencia entre las muestras. Por ende abordaremos un modelo
+marginal con un diseño de medidas repetidas en el \textbf{espacio},
+donde la falta de independencia de los datos con una matriz de
+covarianzas. Este es un modelo generalizado lineal, ya que la variable
+respuesta tiene una distribución Poisson y se usan medidas repetidas
+(GEE).
+
+\[
+\begin{gather}
+ \ln( E ( \frac {Riqueza}{5 ~ ml ~ Agua}))_i = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST_i +  \beta_4 bbp_i  + \beta_5 Clorofila_i  + \beta_6 POC_i + \beta_7 Estable_i + \beta_8 Distancia_i 
+ \\ (\frac  {Riqueza}{5 ~ ml ~ Agua})_i   \sim Poisson ( \lambda_i)
+ \end{gather}
+\]
+
+Como en GEE no existe una matriz de correlación continua de distancias,
+asumimos una autroregresiva de orden uno, debido a que las distancias
+entre los puntos se mantienen relativamente constantes.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Desarollo Analisis}\label{desarollo-analisis}
+
+\subsubsection{Transformación datos}\label{transformaciuxf3n-datos}
+
+Para comenzar, se pasaron las latitudes y longitudes a distancias,
+tomando un punto de cada fuente como referencia y renombramos los
+frentes.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{datos\_crudos }\OtherTok{\textless{}{-}}\FunctionTok{read.csv}\NormalTok{(}\StringTok{"../datos/complete\_data.csv"}\NormalTok{, }\AttributeTok{header=}\NormalTok{T)}
+\FunctionTok{summary}\NormalTok{(datos\_crudos)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+  object_id              lat              lon            source         
+ Length:75          Min.   :-49.29   Min.   :-64.00   Length:75         
+ Class :character   1st Qu.:-48.57   1st Qu.:-63.86   Class :character  
+ Mode  :character   Median :-46.37   Median :-61.53   Mode  :character  
+                    Mean   :-47.05   Mean   :-61.94                     
+                    3rd Qu.:-46.03   3rd Qu.:-60.50                     
+                    Max.   :-45.67   Max.   :-59.74                     
+    riqueza           Chl               POC            gamma        
+ Min.   :10.00   Min.   : 0.4548   Min.   :105.9   Min.   :0.01552  
+ 1st Qu.:14.00   1st Qu.: 0.6219   1st Qu.:136.0   1st Qu.:0.46007  
+ Median :17.00   Median : 1.5955   Median :204.1   Median :0.89590  
+ Mean   :17.39   Mean   : 3.7664   Mean   :248.8   Mean   :0.78349  
+ 3rd Qu.:19.00   3rd Qu.: 4.8241   3rd Qu.:339.3   3rd Qu.:1.03459  
+ Max.   :32.00   Max.   :19.6760   Max.   :615.9   Max.   :1.43580  
+      SST             SSS             bbp          
+ Min.   :10.84   Min.   :33.23   Min.   :0.000643  
+ 1st Qu.:11.53   1st Qu.:33.40   1st Qu.:0.001404  
+ Median :11.88   Median :33.50   Median :0.001794  
+ Mean   :12.32   Mean   :33.49   Mean   :0.002673  
+ 3rd Qu.:13.35   3rd Qu.:33.56   3rd Qu.:0.002660  
+ Max.   :13.59   Max.   :33.88   Max.   :0.010674  
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\#\#\#DISTANCIA\#\#\#\#}
+\CommentTok{\# Coordenadas iniciales por localidad}
+\NormalTok{ref\_points }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{source =} \FunctionTok{c}\NormalTok{(}\StringTok{"bloom"}\NormalTok{, }\StringTok{"talud"}\NormalTok{),}
+  \AttributeTok{ref\_lat =} \FunctionTok{c}\NormalTok{(}\SpecialCharTok{{-}}\FloatTok{48.2656}\NormalTok{, }\SpecialCharTok{{-}}\FloatTok{45.6659}\NormalTok{),}
+  \AttributeTok{ref\_lon =} \FunctionTok{c}\NormalTok{(}\SpecialCharTok{{-}}\FloatTok{63.7595}\NormalTok{, }\SpecialCharTok{{-}}\FloatTok{59.7381}\NormalTok{)}
+\NormalTok{)}
+
+\CommentTok{\# Calcular distancia al punto inicial de cada localidad}
+\NormalTok{datos\_crudos }\OtherTok{\textless{}{-}}\NormalTok{ datos\_crudos }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{left\_join}\NormalTok{(ref\_points, }\AttributeTok{by =} \StringTok{"source"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{dist\_m =} \FunctionTok{distHaversine}\NormalTok{(}
+      \AttributeTok{p1 =} \FunctionTok{cbind}\NormalTok{(ref\_lon, ref\_lat),}
+      \AttributeTok{p2 =} \FunctionTok{cbind}\NormalTok{(lon, lat)}
+\NormalTok{    ),}
+    \AttributeTok{dist =}\NormalTok{ dist\_m }\SpecialCharTok{/} \DecValTok{1000}
+\NormalTok{  )}
+
+\NormalTok{datos }\OtherTok{=}\NormalTok{ datos\_crudos[, }\SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{,}\DecValTok{12}\SpecialCharTok{:}\DecValTok{14}\NormalTok{ )]}
+
+\NormalTok{datos}\SpecialCharTok{$}\NormalTok{source }\OtherTok{\textless{}{-}} \FunctionTok{recode\_factor}\NormalTok{(datos}\SpecialCharTok{$}\NormalTok{source,}
+                              \StringTok{"bloom"} \OtherTok{=} \StringTok{"transitorio"}\NormalTok{,}
+                              \StringTok{"talud"} \OtherTok{=} \StringTok{"estable"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{Analisis Exploratorio
+Datos}\label{analisis-exploratorio-datos}
+
+\paragraph{Analiticamente}\label{analiticamente}
+
+Se realiza un resumen de las variables explicativas por cada frente,
+observando las medias y la cantidad de muestras en cada una.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{resumen\_frente }\OtherTok{\textless{}{-}}\NormalTok{ datos }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(source) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarize}\NormalTok{(}
+    \AttributeTok{n =} \FunctionTok{n}\NormalTok{(),}
+    \AttributeTok{riqueza =} \FunctionTok{mean}\NormalTok{(riqueza),}
+    \AttributeTok{salinidad =} \FunctionTok{mean}\NormalTok{(SSS),}
+    \AttributeTok{chl =} \FunctionTok{mean}\NormalTok{(Chl),}
+    \AttributeTok{POC =} \FunctionTok{mean}\NormalTok{(POC),}
+    \AttributeTok{gamma =} \FunctionTok{mean}\NormalTok{(gamma),}
+    \AttributeTok{SST =} \FunctionTok{mean}\NormalTok{(SST),}
+    \AttributeTok{bbp =} \FunctionTok{mean}\NormalTok{(bbp)}
+\NormalTok{  )}
+\NormalTok{knitr }\SpecialCharTok{::} \FunctionTok{kable}\NormalTok{(resumen\_frente,}
+               
+               \AttributeTok{caption =} \StringTok{"Medidas resumen por frente "}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1500}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.0375}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1000}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1250}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1125}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1125}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1250}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1125}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1250}}@{}}
+\caption{Medidas resumen por frente}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+source
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+riqueza
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+salinidad
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+chl
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+POC
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+gamma
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+SST
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+bbp
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+source
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+riqueza
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+salinidad
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+chl
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+POC
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+gamma
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+SST
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+bbp
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+transitorio & 25 & 21.80 & 33.33616 & 7.966973 & 363.3142 & 0.3174908 &
+11.54059 & 0.0047610 \\
+estable & 50 & 15.18 & 33.56649 & 1.666169 & 191.6131 & 1.0164925 &
+12.71537 & 0.0016287 \\
+\end{longtable}
+
+\paragraph{Graficamente}\label{graficamente}
+
+Se explora la relación entre las variables exploratorias con la variable
+respuesta, separando para cada frente.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{linealidadPlot }\OtherTok{=} \ControlFlowTok{function}\NormalTok{ (var, nombre)\{}
+  
+\FunctionTok{ggplot}\NormalTok{(datos, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{\{\{var\}\}, }\AttributeTok{y=}\NormalTok{ riqueza,}\AttributeTok{group =}\NormalTok{ source , }\AttributeTok{color =}\NormalTok{ source)) }\SpecialCharTok{+} 
+  \FunctionTok{geom\_point}\NormalTok{(  }\AttributeTok{size=}\DecValTok{3}\NormalTok{,  }\AttributeTok{shape=}\DecValTok{19}\NormalTok{ ) }\SpecialCharTok{+}  
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method=}\NormalTok{lm, }\AttributeTok{se=}\NormalTok{F, }\AttributeTok{fullrange=}\NormalTok{F, }\AttributeTok{size=}\FloatTok{0.5}\NormalTok{)}\SpecialCharTok{+} 
+  \FunctionTok{xlab}\NormalTok{( nombre ) }\SpecialCharTok{+}  \FunctionTok{ylab}\NormalTok{(}\StringTok{"Riqueza"}\NormalTok{) }
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linealidadPlot}\NormalTok{(Chl,}\StringTok{"Clorofila [mg/m3]"}\NormalTok{)}
+\FunctionTok{linealidadPlot}\NormalTok{(POC,}\StringTok{"POC [mg/m3]"}\NormalTok{)}
+\FunctionTok{linealidadPlot}\NormalTok{(bbp,}\StringTok{"bbp [mg/m3]"}\NormalTok{)}
+\FunctionTok{linealidadPlot}\NormalTok{(gamma,}\StringTok{"gamma"}\NormalTok{)}
+\FunctionTok{linealidadPlot}\NormalTok{(SST,}\StringTok{"Temperatura Superficial [°C]"}\NormalTok{)}
+\FunctionTok{linealidadPlot}\NormalTok{(SSS,}\StringTok{"Salinidad Superficial [UPS]"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+
+\begin{minipage}{0.50\linewidth}
+\pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/explorativos-1.pdf}}\end{minipage}%
+%
+\begin{minipage}{0.50\linewidth}
+\pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/explorativos-2.pdf}}\end{minipage}%
+\newline
+\begin{minipage}{0.50\linewidth}
+\pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/explorativos-3.pdf}}\end{minipage}%
+%
+\begin{minipage}{0.50\linewidth}
+\pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/explorativos-4.pdf}}\end{minipage}%
+\newline
+\begin{minipage}{0.50\linewidth}
+\pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/explorativos-5.pdf}}\end{minipage}%
+%
+\begin{minipage}{0.50\linewidth}
+\pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/explorativos-6.pdf}}\end{minipage}%
+
+\end{figure}%
+
+\paragraph{Correlacion}\label{correlacion}
+
+Como las variables medidas se esperan que estén correlacionadas, se
+realizó un gráfico de correlación para evaluar la misma, separando por
+cada frente.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(GGally)}
+\FunctionTok{ggpairs}\NormalTok{(datos[}\DecValTok{2}\SpecialCharTok{:}\DecValTok{10}\NormalTok{], }\FunctionTok{aes}\NormalTok{ ( }\AttributeTok{color =}\NormalTok{ source))}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/unnamed-chunk-6-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(knitr)}
+
+
+\NormalTok{m0}\OtherTok{\textless{}{-}}\FunctionTok{geeglm}\NormalTok{(}\AttributeTok{formula=}\NormalTok{ riqueza}\SpecialCharTok{\textasciitilde{}}\NormalTok{Chl}\SpecialCharTok{+}\NormalTok{SSS}\SpecialCharTok{+}\NormalTok{source}\SpecialCharTok{+}\NormalTok{gamma}\SpecialCharTok{+}\NormalTok{bbp}\SpecialCharTok{+}\NormalTok{POC}\SpecialCharTok{+}\NormalTok{SST, }\AttributeTok{family =}\NormalTok{ poisson, }\AttributeTok{data=}\NormalTok{datos,}\AttributeTok{id=}\NormalTok{source,}\AttributeTok{corstr =} \StringTok{"ar1"}\NormalTok{)}
+
+\FunctionTok{kable}\NormalTok{(}\FunctionTok{vif}\NormalTok{(m0), }
+      \AttributeTok{digits =} \DecValTok{3}\NormalTok{, }
+      \AttributeTok{caption =} \StringTok{"VIF"}\NormalTok{) }\CommentTok{\# \textless{}{-}{-} No format argument}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lr@{}}
+\caption{VIF}\tabularnewline
+\toprule\noalign{}
+& x \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+& x \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Chl & 1.184410e+14 \\
+SSS & 1.132750e+13 \\
+source & 1.135208e+15 \\
+gamma & 2.425235e+15 \\
+bbp & -6.744785e+12 \\
+POC & 1.005204e+14 \\
+SST & 1.478070e+13 \\
+\end{longtable}
+
+A partir de esto se observa una alta correlación entre las variables
+explicativas, por lo que es necesario realizar una selección criteriosa
+de los modelos.
+
+\paragraph{Modelo}\label{modelo}
+
+Para comenzar se realiza un modelo con todas las variables explicativas.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(geepack)}
+
+\NormalTok{datos }\OtherTok{\textless{}{-}}\NormalTok{ datos }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(object\_id)}
+
+\NormalTok{m0}\OtherTok{\textless{}{-}}\FunctionTok{geeglm}\NormalTok{(}\AttributeTok{formula=}\NormalTok{ riqueza}\SpecialCharTok{\textasciitilde{}}\NormalTok{Chl}\SpecialCharTok{+}\NormalTok{SSS}\SpecialCharTok{+}\NormalTok{source}\SpecialCharTok{+}\NormalTok{gamma}\SpecialCharTok{+}\NormalTok{bbp}\SpecialCharTok{+}\NormalTok{POC}\SpecialCharTok{+}\NormalTok{SST, }\AttributeTok{family =}\NormalTok{ poisson, }\AttributeTok{data=}\NormalTok{datos,}\AttributeTok{id=}\NormalTok{source,}\AttributeTok{corstr =} \StringTok{"ar1"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{Supuestos}\label{supuestos}
+
+\paragraph{Dispersion}\label{dispersion}
+
+Se verifica la ausencia de sobre o subdispersión de los residuos de
+pearson.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{testDispersion}\NormalTok{(m0, }\AttributeTok{type =} \StringTok{"PearsonChisq"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+    Parametric dispersion test via mean Pearson-chisq statistic
+
+data:  m0
+dispersion = 0.58674, df = 67, p-value = 0.005528
+alternative hypothesis: two.sided
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sim }\OtherTok{\textless{}{-}} \FunctionTok{simulateResiduals}\NormalTok{(}\AttributeTok{fittedMod =}\NormalTok{ m0, }\AttributeTok{plot =}\NormalTok{ T)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/unnamed-chunk-8-1.pdf}}
+
+Se observa subdipersion de los residuos, por lo que debe ser modelada
+con una distribución como Conway-Maxwell-Poisson para evitar sobrestimar
+los errores estándars.
+
+Sin embargo, la librería GEE no presenta alternativas para la familia
+Poisson que corrijan la subdispersion ( la documentación dice la
+existencia de quasiPoisson pero no se logró que funcione) por lo que se
+descarta la posibilidad de modelar la subdispersión.
+
+Ante este problema, se decide asumir que la distribución de
+probabilidades de la riqueza se asemeja a una distribución Normal debido
+a que la distribución Poisson con \$\textbackslash lambda\$ mayor a ocho
+se aproxima a esta.
+
+\subsubsection{Plan B}\label{plan-b}
+
+\paragraph{Modelo Riqueza \textasciitilde{}
+Normal}\label{modelo-riqueza-normal}
+
+\[
+\begin{gather}
+  Riqueza_i = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST_i +  \beta_4 bbp_i  + \beta_5 Clorofila_i  + \beta_6 POC_i + \beta_7 Estable_i + \beta_8 Distancia_i + \epsilon_i
+\\ \epsilon_i \sim Normal(0,\sigma^2_{frente})
+\\ i : 1 -75
+\end{gather}
+\]
+
+Como en Poisson mayor media equivale a mayor varianza, la
+homocedasticidad es problemática al convertirlo en Normal. Sin embaro,
+se encuentra que estimando una varianza para cada frente soluciona la
+falta de homocedasticidad. Se utilizó la función var Ident para el
+modelado de la varianza.
+
+Asimismo se probaron var Power y var Exp pero los resultados no fueron
+satisfactorios debido a que no corrigen la heterocedasticidad. Además,
+el modelado de varianza por var Ident no presenta un aumento
+significativo de cantidad de parámetros estimados en comparación a los
+otros.
+
+\section{VER de agregar var Power y var
+Exp}\label{ver-de-agregar-var-power-y-var-exp}
+
+\paragraph{Seleccion de modelos}\label{seleccion-de-modelos}
+
+Dada la alta correlación entre las variables explicativas, se decide por
+criterio de interés biológico seleccionar a la salinidad superficial y
+el Tamaño inverso de partículas. Como estas dos presentan una
+correlación entre ellas, no serán utilizados en el mismo modelo, sino
+que se generaran dos distintos: uno explicará las variaciones de la
+riqueza a partir del ambiente, mientras el otro lo hará a partir de las
+condiciones intrínsecas de la comunidad. Debido a la falta de linealidad
+de la salinidad se utiliza un polinomio de grado dos para este modelo.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m\_Nulo }\OtherTok{=} \FunctionTok{gls}\NormalTok{(}\AttributeTok{model =}\NormalTok{ riqueza }\SpecialCharTok{\textasciitilde{}} \DecValTok{1}\NormalTok{ , }\AttributeTok{weights =} \FunctionTok{varIdent}\NormalTok{(}\AttributeTok{form =} \SpecialCharTok{\textasciitilde{}}\DecValTok{1}\SpecialCharTok{|}\NormalTok{source) , }\AttributeTok{data =}\NormalTok{ datos,}\AttributeTok{correlation =} \FunctionTok{corCAR1}\NormalTok{(}\AttributeTok{form =} \SpecialCharTok{\textasciitilde{}}\NormalTok{ dist}\SpecialCharTok{|}\NormalTok{source))}
+
+\NormalTok{m\_gamma}\OtherTok{=}\FunctionTok{gls}\NormalTok{(}\AttributeTok{model =}\NormalTok{ riqueza }\SpecialCharTok{\textasciitilde{}}\NormalTok{ gamma   ,}\AttributeTok{data =}\NormalTok{ datos, }\AttributeTok{weights =} \FunctionTok{varIdent}\NormalTok{(}\AttributeTok{form =} \SpecialCharTok{\textasciitilde{}}\DecValTok{1}\SpecialCharTok{|}\NormalTok{source),}\AttributeTok{correlation =} \FunctionTok{corCAR1}\NormalTok{(}\AttributeTok{form =} \SpecialCharTok{\textasciitilde{}}\NormalTok{ dist}\SpecialCharTok{|}\NormalTok{source))}
+
+\NormalTok{m\_SSS2 }\OtherTok{=} \FunctionTok{gls}\NormalTok{(}\AttributeTok{model =}\NormalTok{ riqueza }\SpecialCharTok{\textasciitilde{}} \FunctionTok{poly}\NormalTok{(SSS, }\DecValTok{2}\NormalTok{)   ,}\AttributeTok{data =}\NormalTok{ datos, }\AttributeTok{weights =} \FunctionTok{varIdent}\NormalTok{(}\AttributeTok{form =} \SpecialCharTok{\textasciitilde{}}\DecValTok{1}\SpecialCharTok{|}\NormalTok{source),}\AttributeTok{correlation =} \FunctionTok{corCAR1}\NormalTok{(}\AttributeTok{form =} \SpecialCharTok{\textasciitilde{}}\NormalTok{ dist}\SpecialCharTok{|}\NormalTok{source))}
+
+\NormalTok{m\_SSS2ygamma }\OtherTok{=} \FunctionTok{gls}\NormalTok{(}\AttributeTok{model =}\NormalTok{ riqueza }\SpecialCharTok{\textasciitilde{}} \FunctionTok{scale}\NormalTok{(SSS) }\SpecialCharTok{+} \FunctionTok{I}\NormalTok{(}\FunctionTok{scale}\NormalTok{(SSS)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+}\NormalTok{ gamma, }
+             \AttributeTok{data =}\NormalTok{ datos, }
+             \AttributeTok{weights =} \FunctionTok{varIdent}\NormalTok{(}\AttributeTok{form =} \SpecialCharTok{\textasciitilde{}}\DecValTok{1}\SpecialCharTok{|}\NormalTok{source) ,}\AttributeTok{correlation =} \FunctionTok{corCAR1}\NormalTok{(}\AttributeTok{form =} \SpecialCharTok{\textasciitilde{}}\NormalTok{ dist}\SpecialCharTok{|}\NormalTok{source))}
+  
+
+
+\NormalTok{modelos }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}
+  \StringTok{"Nulo"} \OtherTok{=}\NormalTok{ m\_Nulo,}
+  \StringTok{"Tamaño Particulas"} \OtherTok{=}\NormalTok{ m\_gamma,}
+  \StringTok{"SSS\^{}2"} \OtherTok{=}\NormalTok{ m\_SSS2,}
+  \StringTok{"SSS\^{}2 + Gamma"} \OtherTok{=}\NormalTok{ m\_SSS2ygamma}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{aic\_values }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(modelos, AIC)}
+\NormalTok{bic\_values }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(modelos, BIC)}
+\NormalTok{rse\_values }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(modelos, sigma)}
+\NormalTok{phi\_values }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(modelos, }\ControlFlowTok{function}\NormalTok{(m) \{}
+  
+  \CommentTok{\# Get the correlation structure}
+\NormalTok{  cor\_struct }\OtherTok{\textless{}{-}} \FunctionTok{coef}\NormalTok{(m}\SpecialCharTok{$}\NormalTok{modelStruct}\SpecialCharTok{$}\NormalTok{corStruct, }\AttributeTok{unconstrained =} \ConstantTok{FALSE}\NormalTok{)}
+  
+  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{is.null}\NormalTok{(cor\_struct))\{}
+\NormalTok{  cor\_struct }\OtherTok{=} \DecValTok{1}
+\NormalTok{  \} }
+  
+  \FunctionTok{return}\NormalTok{(cor\_struct)}
+  
+\NormalTok{\})}
+
+\NormalTok{p\_value\_last\_coef }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(modelos, }\ControlFlowTok{function}\NormalTok{(m) \{}
+  
+  \CommentTok{\# Get the coefficient table from the summary}
+\NormalTok{  tTable }\OtherTok{\textless{}{-}} \FunctionTok{summary}\NormalTok{(m)}\SpecialCharTok{$}\NormalTok{tTable}
+  
+  \CommentTok{\# Get the number of rows (which is the last coefficient)}
+\NormalTok{  last\_row }\OtherTok{\textless{}{-}} \FunctionTok{nrow}\NormalTok{(tTable)}
+  
+  \CommentTok{\# Get the p{-}value from that last row}
+\NormalTok{  p\_val }\OtherTok{\textless{}{-}}\NormalTok{ tTable[last\_row, }\StringTok{"p{-}value"}\NormalTok{]}
+  
+  \FunctionTok{return}\NormalTok{(p\_val)}
+\NormalTok{\})}
+
+\NormalTok{results\_table }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Phi =}\NormalTok{ phi\_values,}
+  \AttributeTok{SE =}\NormalTok{ rse\_values,}
+  \AttributeTok{AIC =}\NormalTok{ aic\_values,}
+  \AttributeTok{BIC =}\NormalTok{ bic\_values,}
+  \AttributeTok{P\_valor =}\NormalTok{ p\_value\_last\_coef}
+\NormalTok{)}
+
+\FunctionTok{library}\NormalTok{(knitr)}
+
+
+\FunctionTok{kable}\NormalTok{(results\_table, }
+      \AttributeTok{digits =} \DecValTok{3}\NormalTok{, }
+      \AttributeTok{caption =} \StringTok{"GLS Model Comparison"}\NormalTok{) }\CommentTok{\# \textless{}{-}{-} No format argument}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lrrrrr@{}}
+\caption{GLS Model Comparison}\tabularnewline
+\toprule\noalign{}
+& Phi & SE & AIC & BIC & P\_valor \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+& Phi & SE & AIC & BIC & P\_valor \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Nulo.Phi & 0 & 7.597 & 422.611 & 431.827 & 0.000 \\
+Tamaño Particulas.Phi & 0 & 4.662 & 401.200 & 412.652 & 0.000 \\
+SSS\^{}2.Phi & 0 & 4.910 & 388.371 & 402.031 & 0.000 \\
+SSS\^{}2 + Gamma.Phi & 0 & 4.727 & 392.939 & 408.778 & 0.055 \\
+\end{longtable}
+
+Se puede observar como al combinar ambos modelos el AIC disminuye, por
+ende se analizó la salinidad superficial y el gamma de forma
+independiente por un interés biológico.
+
+\subsubsection{Supuestos}\label{supuestos-1}
+
+No se encuentra evidencias suficientes para rechazar los supuestos de
+linealidad de las variables explicativas con la variable respuesta, la
+normalidad de los residuos, la homocedasticidad de las varianzas y la
+independencia de los datos con el gráfico ACF.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(performance)}
+
+
+\NormalTok{model\_names }\OtherTok{\textless{}{-}} \FunctionTok{names}\NormalTok{(modelos)}
+
+\ControlFlowTok{for}\NormalTok{ (current\_name }\ControlFlowTok{in}\NormalTok{ model\_names) \{}
+  
+\NormalTok{  m }\OtherTok{\textless{}{-}}\NormalTok{ modelos[[current\_name]]}
+  
+  
+\NormalTok{  r }\OtherTok{=} \FunctionTok{residuals}\NormalTok{(m , }\AttributeTok{type =} \StringTok{"pearson"}\NormalTok{)}
+\NormalTok{  predichos }\OtherTok{=} \FunctionTok{predict}\NormalTok{(m)}
+  \FunctionTok{plot}\NormalTok{(predichos , r , }\AttributeTok{main =}\NormalTok{ current\_name)}
+  \FunctionTok{abline}\NormalTok{(}\AttributeTok{h =} \DecValTok{0}\NormalTok{, }\AttributeTok{col =} \StringTok{"red"}\NormalTok{, }\AttributeTok{lty =} \DecValTok{2}\NormalTok{)}
+  
+  \FunctionTok{acf}\NormalTok{(}\FunctionTok{resid}\NormalTok{(m, }\AttributeTok{type=}\StringTok{"normalized"}\NormalTok{), }\AttributeTok{main=}\NormalTok{current\_name)}
+
+  
+  \FunctionTok{qqPlot}\NormalTok{(r)}
+  \FunctionTok{print}\NormalTok{(}\FunctionTok{shapiro.test}\NormalTok{(r))}
+  
+\NormalTok{ \}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+
+\begin{minipage}{0.50\linewidth}
+
+\begin{verbatim}
+
+    Shapiro-Wilk normality test
+
+data:  r
+W = 0.9816, p-value = 0.3467
+\end{verbatim}
+
+\end{minipage}%
+%
+\begin{minipage}{0.50\linewidth}
+
+\begin{verbatim}
+
+    Shapiro-Wilk normality test
+
+data:  r
+W = 0.97465, p-value = 0.137
+\end{verbatim}
+
+\end{minipage}%
+\newline
+\begin{minipage}{0.50\linewidth}
+
+\begin{verbatim}
+
+    Shapiro-Wilk normality test
+
+data:  r
+W = 0.98244, p-value = 0.3852
+\end{verbatim}
+
+\end{minipage}%
+%
+\begin{minipage}{0.50\linewidth}
+
+\begin{verbatim}
+
+    Shapiro-Wilk normality test
+
+data:  r
+W = 0.97955, p-value = 0.2658
+\end{verbatim}
+
+\end{minipage}%
+\newline
+\begin{minipage}{0.50\linewidth}
+
+\begin{figure}[H]
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-1.pdf}}
+
+}
+
+\subcaption{Gráfico de residuos de Pearson en función de los predichos.}
+
+\end{figure}%
+
+\end{minipage}%
+%
+\begin{minipage}{0.50\linewidth}
+
+\begin{figure}[H]
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-2.pdf}}
+
+}
+
+\subcaption{Análisis de la función de autocorrelación (ACF) para el
+modelo nulo, y los modelos de riqueza tanto en función del tamaño de
+partículas inverso, como el cuadrático de salinidad superficial . Los
+tres modelos presentan la matriz de correlación explícita continua,
+autoregresiva de orden 1.}
+
+\end{figure}%
+
+\end{minipage}%
+\newline
+\begin{minipage}{0.50\linewidth}
+
+\begin{figure}[H]
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-3.pdf}}
+
+}
+
+\subcaption{Gráfico de cuantiles observados en función de los cuantiles
+teóricos.}
+
+\end{figure}%
+
+\end{minipage}%
+%
+\begin{minipage}{0.50\linewidth}
+
+\begin{figure}[H]
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-4.pdf}}
+
+}
+
+\subcaption{Gráfico de residuos de Pearson en función de los predichos.}
+
+\end{figure}%
+
+\end{minipage}%
+\newline
+\begin{minipage}{0.50\linewidth}
+
+\begin{figure}[H]
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-5.pdf}}
+
+}
+
+\subcaption{Análisis de la función de autocorrelación (ACF) para el
+modelo nulo, y los modelos de riqueza tanto en función del tamaño de
+partículas inverso, como el cuadrático de salinidad superficial . Los
+tres modelos presentan la matriz de correlación explícita continua,
+autoregresiva de orden 1.}
+
+\end{figure}%
+
+\end{minipage}%
+%
+\begin{minipage}{0.50\linewidth}
+
+\begin{figure}[H]
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-6.pdf}}
+
+}
+
+\subcaption{Gráfico de cuantiles observados en función de los cuantiles
+teóricos.}
+
+\end{figure}%
+
+\end{minipage}%
+\newline
+\begin{minipage}{0.50\linewidth}
+
+\begin{figure}[H]
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-7.pdf}}
+
+}
+
+\subcaption{Gráfico de residuos de Pearson en función de los predichos.}
+
+\end{figure}%
+
+\end{minipage}%
+%
+\begin{minipage}{0.50\linewidth}
+
+\begin{figure}[H]
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-8.pdf}}
+
+}
+
+\subcaption{Análisis de la función de autocorrelación (ACF) para el
+modelo nulo, y los modelos de riqueza tanto en función del tamaño de
+partículas inverso, como el cuadrático de salinidad superficial . Los
+tres modelos presentan la matriz de correlación explícita continua,
+autoregresiva de orden 1.}
+
+\end{figure}%
+
+\end{minipage}%
+\newline
+\begin{minipage}{0.50\linewidth}
+
+\begin{figure}[H]
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-9.pdf}}
+
+}
+
+\subcaption{Gráfico de cuantiles observados en función de los cuantiles
+teóricos.}
+
+\end{figure}%
+
+\end{minipage}%
+%
+\begin{minipage}{0.50\linewidth}
+
+\begin{figure}[H]
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-10.pdf}}
+
+}
+
+\subcaption{Gráfico de residuos de Pearson en función de los predichos.}
+
+\end{figure}%
+
+\end{minipage}%
+\newline
+\begin{minipage}{0.50\linewidth}
+
+\begin{figure}[H]
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-11.pdf}}
+
+}
+
+\subcaption{Análisis de la función de autocorrelación (ACF) para el
+modelo nulo, y los modelos de riqueza tanto en función del tamaño de
+partículas inverso, como el cuadrático de salinidad superficial . Los
+tres modelos presentan la matriz de correlación explícita continua,
+autoregresiva de orden 1.}
+
+\end{figure}%
+
+\end{minipage}%
+%
+\begin{minipage}{0.50\linewidth}
+
+\begin{figure}[H]
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-12.pdf}}
+
+}
+
+\subcaption{Gráfico de cuantiles observados en función de los cuantiles
+teóricos.}
+
+\end{figure}%
+
+\end{minipage}%
+\newline
+\begin{minipage}{0.50\linewidth}
+Diagnóstico del modelo\end{minipage}%
+
+\end{figure}%
+
+\subsection{Resultados Finales}\label{resultados-finales}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(m\_SSS2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Generalized least squares fit by REML
+  Model: riqueza ~ poly(SSS, 2) 
+  Data: datos 
+       AIC      BIC    logLik
+  388.3711 402.0311 -188.1855
+
+Correlation Structure: Continuous AR(1)
+ Formula: ~dist | source 
+ Parameter estimate(s):
+         Phi 
+9.636215e-15 
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | source 
+ Parameter estimates:
+transitorio     estable 
+  1.0000000   0.5314462 
+
+Coefficients:
+                  Value Std.Error  t-value p-value
+(Intercept)    17.17246  0.398542 43.08827       0
+poly(SSS, 2)1 -18.22166  3.812801 -4.77907       0
+poly(SSS, 2)2  21.09189  3.502766  6.02150       0
+
+ Correlation: 
+              (Intr) p(SSS,2)1
+poly(SSS, 2)1 -0.463          
+poly(SSS, 2)2  0.371 -0.463   
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max 
+-2.1168380 -0.5799157  0.0322753  0.5453694  2.7564371 
+
+Residual standard error: 4.909523 
+Degrees of freedom: 75 total; 72 residual
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(m\_gamma)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Generalized least squares fit by REML
+  Model: riqueza ~ gamma 
+  Data: datos 
+       AIC     BIC    logLik
+  401.1997 412.652 -195.5998
+
+Correlation Structure: Continuous AR(1)
+ Formula: ~dist | source 
+ Parameter estimate(s):
+        Phi 
+5.90014e-35 
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | source 
+ Parameter estimates:
+transitorio     estable 
+  1.0000000   0.6160909 
+
+Coefficients:
+                Value Std.Error   t-value p-value
+(Intercept) 22.352867  1.102099 20.282096       0
+gamma       -6.748224  1.142268 -5.907741       0
+
+ Correlation: 
+      (Intr)
+gamma -0.941
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max 
+-1.9746546 -0.6932941 -0.1069366  0.7764364  2.3063315 
+
+Residual standard error: 4.662027 
+Degrees of freedom: 75 total; 73 residual
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{confint}\NormalTok{(m\_SSS2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+                  2.5 %    97.5 %
+(Intercept)    16.39134  17.95359
+poly(SSS, 2)1 -25.69461 -10.74871
+poly(SSS, 2)2  14.22659  27.95718
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{confint}\NormalTok{(m\_gamma)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+                2.5 %   97.5 %
+(Intercept) 20.192794 24.51294
+gamma       -8.987029 -4.50942
+\end{verbatim}
+
+Para ambos modelos se encuentra que los estimadores son
+significativamente distintos de cero (p \textless{} 0.05) y que poseen
+un Phi de covarianza muy bajo, cercano a cero. Sin embargo se decidió
+dejar la matriz de covarianzas ya que presentan mejor AIC que los mismos
+modelos sin considerarla.
+
+\paragraph{Ecuación estimada de la riqueza en función del tamaño de
+partículas
+inverso:}\label{ecuaciuxf3n-estimada-de-la-riqueza-en-funciuxf3n-del-tamauxf1o-de-partuxedculas-inverso}
+
+\[
+Riqueza = 22.353 - 6.748*TamPart
+\]
+
+\paragraph{Ecuación estimada de la riqueza en función del tamaño de la
+salinidad
+superficial:}\label{ecuaciuxf3n-estimada-de-la-riqueza-en-funciuxf3n-del-tamauxf1o-de-la-salinidad-superficial}
+
+\[
+Riqueza = 17.17 - 18.22*SSS + 21.09*SSS²
+\]
+
+Se observa una relación lineal negativa entre la salinidad y la riqueza
+a valores de salinidad bajos entre 33,2 - 33,5 UPS aproximadamente.
+Mientras que a valores medios y altos de salinidad, se observa una
+tendencia inversa dada por el término cuadrático. Sin embargo, los
+valores de riqueza no llegan a recomponerse quedando riquezas bajas en
+altas salinidades.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(ggeffects)}
+
+
+\NormalTok{pred\_salinidad }\OtherTok{\textless{}{-}} \FunctionTok{ggpredict}\NormalTok{(}\FunctionTok{update}\NormalTok{(m\_SSS2,}\AttributeTok{correlation =} \ConstantTok{NULL}\NormalTok{), }\AttributeTok{terms =} \FunctionTok{c}\NormalTok{(}\StringTok{"SSS [all]"}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(pred\_salinidad )}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{""}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"SSS [UPS]"}\NormalTok{,}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/unnamed-chunk-12-1.pdf}}
+
+}
+
+\caption{Relación esperada entre la riqueza (número de taxones) y el
+polinomio de grado 2 de la salinidad (UPS). Se muestra la relación con
+su banda de confianza (95\%), representada con las regiones sombreadas.}
+
+\end{figure}%
+
+Se observa una relación lineal negativa entre gamma y riqueza, donde por
+cada aumento unitario de tamaño de las partículas, la riqueza disminuye
+en promedio entre 4.509 y 8.987 numero de taxones, con un 95\% de
+confianza.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pred\_gamma }\OtherTok{\textless{}{-}} \FunctionTok{ggpredict}\NormalTok{(}\FunctionTok{update}\NormalTok{(m\_gamma,}\AttributeTok{correlation =} \ConstantTok{NULL}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(pred\_gamma )}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{""}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"gamma"}\NormalTok{,}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/unnamed-chunk-13-1.pdf}}
+
+}
+
+\caption{Relación esperada entre la riqueza (número de taxones) y el
+tamaño de partículas inverso. Se muestra la recta estimada con su banda
+de confianza (95\%), representada con las regiones sombreadas.}
+
+\end{figure}%
+
+\subsection{Discusión y conclusiones}\label{discusiuxf3n-y-conclusiones}
+
+Se observó que existe una relación, tanto entre la salinidad como con el
+tamaño de los organismos, con la riqueza de plancton de la misma.
+
+Por un lado, se notó que el número de especies varía según el polinomio
+cuadrado de la salinidad (UPS) (p\textless0.05), con un mínimo en 33.61
+UPS y presentando el máximo de número de taxones en aguas poco salobres,
+relacionadas con aguas internas de la plataforma.
+
+Además, la cantidad de taxones disminuyó linealmente a menores tamaños
+de organismos, cayendo en promedio 6.748 números de taxones por unidad
+de gamma.~
+
+De esta manera, se puede concluir que las comunidades presentes en las
+aguas internas de la plataforma continental poseerán una mayor riqueza,
+asociada a una menor salinidad y organismos más grandes; frente a las
+comunidades del talud, las cuales poseerán un menor número de taxones.~
+
+\subsection{Biblografia}\label{biblografia}
+
+Falkowski, P. G., Fenchel, T., \& Delong, E. F. (2008). The microbial
+engines that drive Earth's biogeochemical cycles. Science, 320(5879),
+1034-1039.
+
+Ferronato, C., Guinder, V. A., Rivarossa, M., Saraceno, M., Ibarbalz,
+F., Tillmann, U., \ldots{} \& Flombaum, P. (2025). Insights into
+protistan plankton blooms in the highly dynamic Patagonian Shelf and
+adjacent ocean basin in the southwestern Atlantic. Journal of
+Geophysical Research: Oceans, 130(3), e2024JC021412.
+
+Guinder, V. A., Ferronato, C., Dogliotti, A. I., Segura, V., \& Lutz, V.
+(2024). The phytoplankton of the Patagonian Shelf-break Front. The
+Patagonian Shelfbreak Front: Ecology, Fisheries, Wildlife Conservation,
+49-72.
+
+Kraberg, A., Baumann, M., \& Dürselen, C. D. (2010). Coastal
+phytoplankton: photo guide for Northern European seas. Pfeil.
+
+Lévy, M., Jahn, O., Dutkiewicz, S., Follows, M. J., \& d'Ovidio, F.
+(2015). The dynamical landscape of marine phytoplankton diversity.
+Journal of the Royal Society Interface, 12(111), 20150481.
+
+Piola, A. R., Palma, E. D., Bianchi, A. A., Castro, B. M., Dottori, M.,
+Guerrero, R. A., \ldots{} \& Saraceno, M. (2018). Physical oceanography
+of the SW Atlantic Shelf: a review. Plankton ecology of the Southwestern
+Atlantic: from the subtropical to the subantarctic realm, 37-56.
+
+Rivas, A. L., Dogliotti, A. I., \& Gagliardini, D. A. (2006). Seasonal
+variability in satellite-measured surface chlorophyll in the Patagonian
+Shelf. Continental Shelf Research, 26(6), 703-720.
+
+Romero, S. I., Piola, A. R., Charo, M., \& Garcia, C. A. E. (2006).
+Chlorophyll‐a variability off Patagonia based on SeaWiFS data. Journal
+of Geophysical Research: Oceans, 111(C5).
+
+\pandocbounded{\includegraphics[keepaspectratio]{images/dharma.jpeg}}
+
+
+
+
+\end{document}
