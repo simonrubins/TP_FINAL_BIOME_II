@@ -12,8 +12,6 @@ output-dir: "asdasdasdasd"
 ```{r}
 #| include: false
 library(nlme)
-library(geepack)
-library(marmap)
 library(dplyr)
 library(geosphere) # Para pasar lat y long a distancias
 library(ggplot2)
@@ -494,7 +492,7 @@ model_names <- names(modelos_sinSource)
 for (current_name in model_names) {
   
   m <- modelos_sinSource[[current_name]]
-  
+  modelos_sinSource
   acf(resid(m, type="normalized"), main=current_name)
     
   r = residuals(m , type = "pearson")
@@ -912,14 +910,6 @@ min = min(pred_salinidad$predicted)
 pred_salinidad [which(pred_salinidad$predicted ==  min)]
 
 
-
-
-m_raw <- gls(
-  riqueza ~ poly(SSS, 2, raw = TRUE),
-  data = datos,
-  weights = varIdent(form = ~1|source),
-  correlation = corCAR1(form = ~ distm|source)
-)
 
 summary(m_raw)
 

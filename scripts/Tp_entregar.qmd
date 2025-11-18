@@ -1,0 +1,399 @@
+---
+title: "Estudio de alta frecuencia de la riqueza microbiana entre 2 tipos de frentes oceanográficos"
+author: "Nicolás, Simón, Nicole, Gonzalo, Martina"
+format: html
+editor: visual
+theme: cerulean
+output-dir: "asdasdasdasd"
+---
+
+## 
+
+```{r}
+#| include: false
+library(nlme)
+library(dplyr)
+library(geosphere) # Para pasar lat y long a distancias
+library(ggplot2)
+library(tidyr)
+library(car) 
+library(DHARMa)
+library(lme4)
+library(geepack)
+```
+
+------------------------------------------------------------------------
+
+# Introducción
+
+Las aguas oceánicas de la capa eufótica están pobladas por microorganismos planctónicos que sostienen las redes tróficas marinas y modulan ciclos biogeoquímicos globales (Falkowski et al., 2008). Sus comunidades son transportadas pasivamente por las corrientes, cuyas condiciones físico-químicas pueden alterar las abundancias celulares de los microorganismos. Comprender cómo varían estas comunidades a lo largo de gradientes ambientales es una pregunta central en ecología microbiana marina y, a su vez, representa un desafío particular ya que la naturaleza dinámica del fluido marino no permite distinguir fácilmente los efectos relativos de las dimensiones espacial y temporal.
+
+A escala planetaria, estas comunidades unicelulares están influenciadas por diferencias de temperatura y radiación solar a lo largo del gradiente latitudinal, así como por grandes patrones de mezcla, estratificación y disponibilidad de nutrientes, los cuales dependen de la ubicación relativa a los continentes, los giros oceánicos subtropicales y las principales corrientes marinas, cada uno con sus propias variaciones estacionales e interanuales. En la mesoescala, los frentes marinos y los remolinos de entre 10-100 km de extensión modifican las condiciones del medio marino por períodos de semanas a meses, mientras que procesos vinculados a estructuras menores de una magnitud de 1-10 km (aquellas denominadas de sub-mesoescala) pueden influir como forzantes ecológicos por lapsos de horas a días. Las tasas de renovación de biomasa y de composición comunitaria integran señales provenientes de todas estas escalas (Levy et al., 2015).
+
+Dentro de este marco, el sector sudoccidental del Atlántico Sur (SOAS) representa un sistema ideal para estudiar cómo distintos forzantes estructuran comunidades planctónicas a lo largo de sus marcados gradientes ambientales. Al sur del 40°S, y adyacente al continente sudamericano, se sitúa la Plataforma Patagónica, una región de alta productividad primaria y biodiversidad (Rivas et al., 2006). Desde el sur ingresan aguas subantárticas de baja salinidad, influenciadas por el aporte de masas de agua procedentes del Estrecho de Magallanes, originadas en las zonas de alta precipitación al oeste de la cordillera (Piola et al., 2018). La plataforma presenta una batimetría amplia y relativamente plana, que se interrumpe bruscamente hacia los 200 m de profundidad, dando paso a un talud que desciende hasta los 4000 m. A lo largo del talud, en dirección N-NE, circula la Corriente de Malvinas, la cual es un desprendimiento de la Corriente Circumpolar Antártica. Esta corriente fría y rica en macronutrientes posee una salinidad relativamente mayor que las aguas de plataforma, generando un frente termohalino permanente pero de intensidad moderada.
+
+El SOAS se caracteriza por una fuerte estacionalidad, con floraciones fitoplanctónicas extensas entre la primavera y el verano. De forma general, estas floraciones ocurren al norte de 45°S entre septiembre y noviembre, y al sur entre noviembre y enero (Romero et al., 2006). Durante este período productivo suele observarse una sucesión de grupos dominantes, incluyendo diatomeas, dinoflagelados y pequeños flagelados como los cocolitofóridos (Guinder et al., 2024). Sin embargo, imágenes satelitales y campañas recientes revelan un escenario más heterogéneo —especialmente en aguas de plataforma— con múltiples parches en mesoescala dominados por una o pocas especies (Ferronato et al., 2025). Para atribuir cambios comunitarios a diferencias espaciales en un entorno físicamente tan dinámico, es necesario contar con alta densidad o frecuencia de muestreo en el espacio y en el tiempo.
+
+------------------------------------------------------------------------
+
+## Objetivos
+
+Se propone estudiar los cambios en la riqueza de las comunidades de plancton microbiano a lo largo de los frentes del talud continental y de transición a una floración fitoplanctónica, a partir de la salinidad superficial y el tamaño de los organismos que componen a la comunidad. Se analizarán las variaciones en las comunidades, tanto en la mesoescala como en la submesoescala.
+
+### Hipótesis
+
+La riqueza se ve afectada tanto por la salinidad como por las estructuras de las comunidades. De esta forma, las condiciones asociadas a los frentes de mesoescala presentan una menor riqueza con una dominancia de especies especialistas, mientras que, las que modelan de forma moderada a los frentes de submesoescala, están asociadas a una mayor riqueza.
+
+### Predicciones
+
+Se espera encontrar una mayor riqueza asociada a aguas internas de la plataforma, las cuales presentan alteraciones moderadas en sus condiciones, con una salinidad relativamente baja y un mayor tamaño de organismos. 
+
+Además, se espera que la riqueza sea menor en aguas del talud, del lado este del frente, donde la salinidad es máxima y la comunidad está dominada, al momento del muestreo, por organismos pequeños como los cocolitofóridos y en menor parte los dinoflagelados desnudos.
+
+------------------------------------------------------------------------
+
+## Metodología
+
+Para estudiar cómo varía la diversidad en los frentes oceánicos, se utilizaron datos provenientes de una campaña de muestreo de tres semanas realizada en diciembre de 2021 a bordo de la goleta científica Tara. El muestreo combinó mediciones continuas y semicontinuas obtenidas mediante el bombeo de agua superficial hacia instrumentos instalados a bordo, junto con estaciones discretas para recolectar muestras de agua y biomasa a distintas profundidades. 
+
+Se realizaron dos transectas, una atravesando el frente del talud continental (desde el talud, donde las aguas son más salobres y profundas) y otro sobre la plataforma, atravesando una floración fitoplanctónica de la plataforma continental. 
+
+	Para evaluar la diversidad, se utilizó la riqueza en 5ml de agua como variable respuesta. Luego, las variables explicativas medidas en la expedición fueron la salinidad, el tamaño de partículas.1, temperatura, bbp y la clorofila. Además de si es la transecta del talud o si es de la plataforma.
+
+Los registros de temperatura y salinidad fueron obtenidos mediante un termosalinógrafo instalado a bordo, y las estimaciones de concentración de clorofila “a” fueron obtenidas por un fluorómetro. 
+
+ Las mediciones semicontinuas consistieron en observaciones de grupos planctónicos a través de un sistema que combina microfluídica y microscopía, denominado Imaging FlowCytobot (IFCB). Este instrumento captura imágenes microscópicas de partículas presentes en 5 mL de agua de mar, aproximadamente cada 30 minutos, y está optimizado para detectar organismos con diámetros entre 5 y 20 micrones. Las imágenes obtenidas se analizan posteriormente mediante la plataforma EcoTaxa.
+
+El análisis computacional fue realizado utilizando el entorno y lenguaje R (R Core Team, 2024). Además se utilizó un diverso número de paquetes como ggplot2 (H. Wickham, 2016)  para realizar gráficos exploratorios, geosphere (RJ. Hijmans, 2024) con el fin de obtener las distancias entre los puntos de muestreo a partir de su ubicación geográfica. El análisis de los residuales de los modelos con una distribución de probabilidades de Poisson se efectuaron utilizando el paquete 'DHARMa' (F. Hartig, 2020). 
+
+Unidad de muestreo: Cada 5 ml de agua de la trayectoria del barco.
+
+Variables **Explicatorias:** (Cuantitativas continuas y distribución aleatoria, normal)
+
+-   Salinidad Superficial: SSS (UPS)
+
+-   Temperatura Superficial: SST (°C)
+
+-   Tamaño de particulas inverso: gamma
+
+-   Índice de refractancia de las partículas: bbp (mg/m3)
+
+-   Clorofila (mg/m3)
+
+-   Carbono orgánico particulado: POC (mg/m3)
+
+Variable Explicatorias cualitativas:
+
+-   Frente: 2 niveles (transitorio y estable)
+
+Variable efectos **aleatorios**:
+
+-   Distancia: Debido a la falta de independencia de las medidas por el espacio, hay que incorporar la distancia en el modelo para evitar la pseudoreplicación. Como no nos interesa en nuestra hipotesis y además suponemos una disminución de autocorrelación con la distancia, se decidio incorporarlo en un análisis **marginal** con un modelo autoregresivo continuo donde la correlación disminuye a mayores distancias..
+
+Variable **Respuesta:**
+
+-   Riqueza ( Numero Sps distintas ) / 5 ml de agua . Cota inferior ( 0 , + ∞) \~ Distribución Poisson
+
+Replicas: 25 Para frente estable, 50 para transitorio
+
+#### Modelo Inicial GEE
+
+Abordaremos un diseño de mididas repetidas en el **espacio**, donde modelaremos la falta de independencia de los datos con una matriz de covarianzas. Es un modelo generalizado lineal ya que la VR tiene una distribución Poisson y se usan medidas repetidas. (GEE)
+
+$$
+ \ln( E ( \frac {Riqueza}{5 ~ ml ~ Agua}))_i = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST_i +  \beta_4 bbp_i  + \beta_5 Clorofila_i  + \beta_6 POC_i + \beta_7 Estable_i + \beta_8 Distancia_i 
+$$
+
+Como en GEE no existe una matriz de correación continua de distancias, asumimos una Autroregresiva.
+
+------------------------------------------------------------------------
+
+## Desarollo Analisis
+
+### Transformación datos
+
+Pasamos las latitudes y longitudes a distancias, tomando un punto de cada fuente como referencia.
+
+```{r}
+datos_crudos <-read.csv("../datos/complete_data.csv", header=T)
+summary(datos_crudos)
+
+####DISTANCIA####
+# Coordenadas iniciales por localidad
+ref_points <- data.frame(
+  source = c("bloom", "talud"),
+  ref_lat = c(-48.2656, -45.6659),
+  ref_lon = c(-63.7595, -59.7381)
+)
+
+# Calcular distancia al punto inicial de cada localidad
+datos_crudos <- datos_crudos %>%
+  left_join(ref_points, by = "source") %>%
+  mutate(
+    dist_m = distHaversine(
+      p1 = cbind(ref_lon, ref_lat),
+      p2 = cbind(lon, lat)
+    ),
+    dist = dist_m / 1000
+  )
+
+datos = datos_crudos[, -c(2,3,12:14 )]
+```
+
+Cambiamos los nombres a los frentes
+
+```{r}
+
+datos$source <- recode_factor(datos$source,
+                              "bloom" = "transitorio",
+                              "talud" = "estable")
+
+```
+
+### Analisis Exploratorio Datos
+
+#### Analiticamente
+
+```{r}
+resumen_frente <- datos %>%
+  group_by(source) %>%
+  summarize(
+    n = n(),
+    riqueza = mean(riqueza),
+    salinidad = mean(SSS),
+    chl = mean(Chl),
+    DE_chl= sd(Chl) , 
+    POC = mean(POC),
+    gamma = mean(gamma),
+    SST = mean(SST),
+    bbp = mean(bbp)
+  )
+knitr :: kable(resumen_frente,
+               
+               caption = "Medidas resumen por frente ") 
+
+```
+
+#### Graficamente
+
+Definiendo funciones
+
+```{r}
+linealidadPlot = function (var, nombre){
+  
+ggplot(datos, aes(x={{var}}, y= riqueza,group = source , color = source)) + 
+  geom_point(  size=3,  shape=19 ) +  
+  geom_smooth(method=lm, se=F, fullrange=F, size=0.5)+ 
+  xlab( nombre ) +  ylab("Riqueza") 
+}
+```
+
+```{r}
+#| label: explorativos
+#| layout-ncol: 2
+#| fig-width: 6
+#| fig-height: 5
+#| warning: false
+linealidadPlot(Chl,"Chl")
+linealidadPlot(POC,"POC")
+linealidadPlot(bbp,"bbp")
+linealidadPlot(gamma,"gamma")
+linealidadPlot(SST,"SST")
+linealidadPlot(SSS,"SSS")
+
+```
+
+#### Correlacion
+
+```{r}
+
+library(GGally)
+# ggpairs(datos[3:10])
+
+```
+
+#### Modelo
+
+```{r}
+library(geepack)
+
+datos <- datos %>%
+  arrange(object_id)
+
+m0<-geeglm(formula= riqueza~Chl+SSS+source+gamma+bbp+POC+SST, family = poisson, data=datos,id=source,corstr = "ar1")
+
+```
+
+### Supuestos
+
+Dispersion
+
+```{r}
+vif(m0)
+testDispersion(m0, type = "PearsonChisq")
+sim <- simulateResiduals(fittedMod = m0, plot = T)
+
+```
+
+Se observa una subdipersion, por lo que hay que modelar la subdispersion con por ejemplo Conway- para evitar sobrestimar los errores estandares.
+
+Sin embargo la libreria GEE no presenta alternativas para la familia Poisson que corrigan la subdispersion ( la documentacion dice la existencia de quasiPoisson pero no logramos hacer que funcione) por lo que nos quedamos sin posibilidad de modelar la subdispersión.
+
+Ante este problema dicidimos asumir que la distribución de probabilidades de la riqueza se azemeja a una distribución Normal ya una distribución Poisson con lambda \> 8 se asimila a una dsitribución Normal.
+
+### Plan B
+
+$$
+ Riqueza = \beta_0 + \beta_1 + SSS_ị \beta_2  TamañoParticulas_i + \beta_3 SST_i +  \beta_4 bbp_i  + \beta_5 Clorofila_i  + \beta_6 POC_i + \beta_7 Estable_i + \beta_8 Distancia_i + \epsilon_i
+\\ \epsilon_i \sim Normal(0,\sigma^2_{frente})
+\\ i : 1 -75
+$$
+
+Como en Poisson \> media \> varianza, la homocedasticidad es problematica al convertirlo de la Poission. Sin embaro, encontramos que Var Ident con una varianza para cada
+
+Lugeo Probamos modelar la varianza ya que en Poisson \> media \> varianza, asumiimos un varPower o varExp. Sin embargo el mejor modelo termino siendo VarIdent con una varianza para cada source probablemente dado a que la riqueza esperada es distntia en cada frente y por la subdispersion.
+
+#### Seleccion de modelos
+
+Dado a la alta correlación entre las variables explicatorias decidimos por criterio de interes bioloógicoomparación
+
+Dado a la falta de linealidad de algunos modelos, se utilizaron polinomios y se seleccionaron los mejores.
+
+```{r}
+m_Nulo = gls(model = riqueza ~ 1 , weights = varIdent(form = ~1|source) , data = datos,correlation = corCAR1(form = ~ dist|source))
+
+m_gamma=gls(model = riqueza ~ gamma   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_SSS2 = gls(model = riqueza ~ poly(SSS, 2)   ,data = datos, weights = varIdent(form = ~1|source),correlation = corCAR1(form = ~ dist|source))
+
+m_SSS2ygamma = gls(model = riqueza ~ scale(SSS) + I(scale(SSS)^2) + gamma, 
+             data = datos, 
+             weights = varIdent(form = ~1|source) ,correlation = corCAR1(form = ~ dist|source))
+  
+
+
+modelos <- list(
+  "Nulo" = m_Nulo,
+  "Tamaño Particulas" = m_gamma,
+  "SSS^2" = m_SSS2,
+  "SSS^2 + Gamma" = m_SSS2ygamma
+)
+
+```
+
+```{r}
+aic_values <- sapply(modelos, AIC)
+bic_values <- sapply(modelos, BIC)
+rse_values <- sapply(modelos, sigma)
+phi_values <- sapply(modelos, function(m) {
+  
+  # Get the correlation structure
+  cor_struct <- coef(m$modelStruct$corStruct, unconstrained = FALSE)
+  
+  if (is.null(cor_struct)){
+  cor_struct = 1
+  } 
+  
+  return(cor_struct)
+  
+})
+
+p_value_last_coef <- sapply(modelos, function(m) {
+  
+  # Get the coefficient table from the summary
+  tTable <- summary(m)$tTable
+  
+  # Get the number of rows (which is the last coefficient)
+  last_row <- nrow(tTable)
+  
+  # Get the p-value from that last row
+  p_val <- tTable[last_row, "p-value"]
+  
+  return(p_val)
+})
+
+results_table <- data.frame(
+  Phi = phi_values,
+  SE = rse_values,
+  AIC = aic_values,
+  BIC = bic_values,
+  P_valor = p_value_last_coef
+)
+
+library(knitr)
+
+
+kable(results_table, 
+      digits = 3, 
+      caption = "GLS Model Comparison") # <-- No format argument
+
+```
+
+### Supuestos
+
+```{r}
+#| label: alternativo
+#| layout-ncol: 2
+#| fig-width: 6
+#| fig-height: 5
+library(performance)
+
+
+model_names <- names(modelos)
+
+for (current_name in model_names) {
+  
+  m <- modelos[[current_name]]
+  
+  
+  r = residuals(m , type = "pearson")
+  predichos = predict(m)
+  plot(predichos , r , main = current_name)
+  abline(h = 0, col = "red", lty = 2)
+  
+  acf(resid(m, type="normalized"), main=current_name)
+  
+  qqPlot(r)
+  print(shapiro.test(r))
+  
+ 
+  
+    
+}
+```
+
+```{r}
+#Modelos seleccionados
+
+summary(m_SSS2)
+
+```
+
+```{r}
+summary(m_gamma)
+```
+
+```{r}
+#check_model(m_SSS2)
+#check_model(m_gamma)
+```
+
+```{r}
+library(ggeffects)
+
+
+pred_salinidad <- ggpredict(update(m_SSS2,correlation = NULL), terms = c("SSS [all]"))
+#plot(pred_salinidad)
+
+
+pred_gamma <- ggpredict(update(m_gamma,correlation = NULL))
+#plot(pred_gamma)
+
+
+
+confint(m_SSS2)
+
+confint(m_gamma)
+
+
+```
