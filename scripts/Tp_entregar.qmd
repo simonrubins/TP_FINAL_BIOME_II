@@ -255,7 +255,7 @@ Se observa subdipersion de los residuos, por lo que debe ser modelada con una di
 
 Sin embargo, la librería GEE no presenta alternativas para la familia Poisson que corrijan la subdispersion (si bien la documentación afirma la existencia de quasiPoisson, no se logra que funcione) por lo que se descarta la posibilidad de modelar la subdispersión.
 
-Ante este problema, se decide asumir que la distribución de probabilidades de la riqueza se asemeja a una distribución Normal debido a que la distribución Poisson con \$\\lambda\$ mayor a ocho se aproxima a esta.
+Ante este problema, se decide asumir que la distribución de probabilidades de la riqueza se asemeja a una distribución Normal debido a que la distribución Poisson con "lambda" mayor a ocho se aproxima a esta.
 :::
 
 ### Plan B
