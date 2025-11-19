@@ -74,7 +74,7 @@ Se realizaron dos transectas, una atravesando el frente del talud continental (d
 
 Para evaluar la diversidad, se utilizó la riqueza en 5ml de agua como variable respuesta. Luego, las variables explicativas medidas en la expedición fueron la salinidad superficial (SSS\[UPS\]), el tamaño de partículas $^{-1}$ (gamma), temperatura superficial (SST\[°C\]), indice de refractancia de las particulas (bbp\[mg/m3)\], la clorofila (Chl\[mg/m3\]) y el carbono orgánico particulado (POC\[mg/m3\]). Además de si se trataba de transecta realizada sobre el frente estable del talud continental o si era el transitorio de aguas internas de la plataforma. Por otro lado, se calcularon las distancias entre cada punto de muestreo utilizando el paquete geosphere (RJ. Hijmans, 2024 ), con el fin de evaluar la independencia de las observaciones, a partir de las coordenadas geográficas del velero.
 
-Los registros de temperatura y salinidad fueron obtenidos mediante un termosalinógrafo instalado a bordo, y las estimaciones de concentración de clorofila “a” fueron obtenidas por un fluorómetro.
+Los registros de temperatura y salinidad fueron obtenidos mediante un termosalinógrafo instalado a bordo, y las estimaciones de concentración de clorofila fueron obtenidas por un fluorómetro.
 
 Las mediciones semicontinuas consistieron en observaciones de grupos planctónicos a través de un sistema que combina microfluídica y microscopía, denominado Imaging FlowCytobot (IFCB). Este instrumento captura imágenes microscópicas de partículas presentes en 5 mL de agua de mar, aproximadamente cada 30 minutos, y está optimizado para detectar organismos con diámetros entre 5 y 20 micrones. Las imágenes obtenidas se analizan posteriormente mediante la plataforma EcoTaxa.
 
@@ -86,7 +86,7 @@ El análisis computacional fue realizado utilizando el entorno y lenguaje R (R C
 ::: justify
 Debido a que la riqueza en 5ml es un conteo de taxones en un continuo, presentando una cota inferior pero no superior, se propone que sigue una distribución de probabilidades de tipo Poisson.
 
-Como los datos se toman en una serie espacial, no se puede asumir independencia entre las muestras. Por ende abordaremos un modelo marginal con un diseño de medidas repetidas en el **espacio**, donde la falta de independencia de los datos con una matriz de covarianzas. Este es un modelo generalizado lineal, ya que la variable respuesta tiene una distribución Poisson y se usan medidas repetidas (GEE).
+Como los datos se toman en una serie espacial, no se puede asumir independencia entre las muestras. Por ende, se abordarán mediante un modelo marginal con un diseño de medidas repetidas en el **espacio**, donde la falta de independencia de los datos con una matriz de covarianzas. Este es un modelo generalizado lineal, ya que la variable respuesta tiene una distribución Poisson y se usan medidas repetidas (GEE).
 :::
 
 $$
@@ -96,7 +96,7 @@ $$
  \end{gather}
 $$
 
-Como en GEE no existe una matriz de correlación continua de distancias, asumimos una autroregresiva de orden uno, debido a que las distancias entre los puntos se mantienen relativamente constantes.
+Como en GEE no existe una matriz de correlación continua de distancias, se asume una autroregresiva de orden uno, debido a que las distancias entre los puntos se mantienen relativamente constantes.
 
 ------------------------------------------------------------------------
 
@@ -104,7 +104,7 @@ Como en GEE no existe una matriz de correlación continua de distancias, asumimo
 
 ### Transformación datos
 
-Para comenzar, se pasaron las latitudes y longitudes a distancias, tomando un punto de cada fuente como referencia y renombramos los frentes.
+Para comenzar, se pasan las latitudes y longitudes a distancias, tomando un punto de cada fuente como referencia y se renombran los frentes.
 
 ```{r}
 datos_crudos <-read.csv("../datos/complete_data.csv", header=T)
@@ -142,7 +142,7 @@ datos$source <- recode_factor(datos$source,
 
 #### Analiticamente
 
-Se realiza un resumen de las variables explicativas por cada frente, observando las medias y la cantidad de muestras en cada una.
+Se realiza un resumen de las variables explicativas por cada frente, donde se observan las medias y la cantidad de muestras en cada una.
 
 ```{r}
 resumen_frente <- datos %>%
@@ -195,7 +195,7 @@ linealidadPlot(SSS,"Salinidad Superficial [UPS]")
 
 #### Correlacion
 
-Como las variables medidas se esperan que estén correlacionadas, se realizó un gráfico de correlación para evaluar la misma, separando por cada frente.
+Como las variables medidas se esperan que estén correlacionadas, se realiza un gráfico de correlación para evaluar la misma, separando por cada frente.
 
 ```{r}
 #| message: false
@@ -219,11 +219,11 @@ kable(vif(m0),
 
 ```
 
-A partir de esto se observa una alta correlación entre las variables explicativas, por lo que es necesario realizar una selección criteriosa de los modelos.
+A partir de esto, se observa una alta correlación entre las variables explicativas, por lo que es necesario realizar una selección criteriosa de las variables explicativas a utilizar y los consiguientes modelos propuestos.
 
 #### Modelo
 
-Para comenzar se realiza un modelo con todas las variables explicativas.
+Para comenzar, se realiza un modelo inicial con todas las variables explicativas.
 
 ```{r}
 library(geepack)
@@ -239,7 +239,7 @@ m0<-geeglm(formula= riqueza~Chl+SSS+source+gamma+bbp+POC+SST, family = poisson, 
 
 #### Dispersion
 
-Se verifica la ausencia de sobre o subdispersión de los residuos de pearson.
+Se verifica la ausencia de sobre o subdispersión de los residuos de pearson, mediante un testeo de los residuos simulados utilizando el paquete DHARMa.
 
 ```{r}
 #| message: false
@@ -253,7 +253,7 @@ sim <- simulateResiduals(fittedMod = m0, plot = T)
 ::: justify
 Se observa subdipersion de los residuos, por lo que debe ser modelada con una distribución como Conway-Maxwell-Poisson para evitar sobrestimar los errores estándars.
 
-Sin embargo, la librería GEE no presenta alternativas para la familia Poisson que corrijan la subdispersion ( la documentación dice la existencia de quasiPoisson pero no se logró que funcione) por lo que se descarta la posibilidad de modelar la subdispersión.
+Sin embargo, la librería GEE no presenta alternativas para la familia Poisson que corrijan la subdispersion (si bien la documentación afirma la existencia de quasiPoisson, no se logra que funcione) por lo que se descarta la posibilidad de modelar la subdispersión.
 
 Ante este problema, se decide asumir que la distribución de probabilidades de la riqueza se asemeja a una distribución Normal debido a que la distribución Poisson con \$\\lambda\$ mayor a ocho se aproxima a esta.
 :::
@@ -271,17 +271,15 @@ $$
 $$
 
 ::: justify
-Como en Poisson mayor media equivale a mayor varianza, la homocedasticidad es problemática al convertirlo en Normal. Sin embaro, se encuentra que estimando una varianza para cada frente soluciona la falta de homocedasticidad. Se utilizó la función var Ident para el modelado de la varianza.
+Como en Poisson mayor media equivale a mayor varianza, la homocedasticidad es problemática al convertirlo en una distribución normal. Sin embaro, se encuentra que estimando una varianza para cada frente soluciona la falta de homocedasticidad. Para esto, se utiliza la función varIdent así modelando la varianza.
 
-Asimismo se probaron var Power y var Exp pero los resultados no fueron satisfactorios debido a que no corrigen la heterocedasticidad. Además, el modelado de varianza por var Ident no presenta un aumento significativo de cantidad de parámetros estimados en comparación a los otros.
+Por otro lado, se probaron las funciones de modelado var Power y var Exp pero los resultados no fueron satisfactorios debido a que no se pudo corregir la heterocedasticidad. Además, el modelado de varianza por var Ident no presenta un aumento significativo de cantidad de parámetros estimados en comparación a los otros (las tres funciones de modelado de varianza aumentan en uno la cantidad de parametros estimados, frente a sin modelar).
 :::
-
-# VER de agregar var Power y var Exp
 
 #### Seleccion de modelos
 
 ::: justify
-Dada la alta correlación entre las variables explicativas, se decide por criterio de interés biológico seleccionar a la salinidad superficial y el Tamaño inverso de partículas. Como estas dos presentan una correlación entre ellas, no serán utilizados en el mismo modelo, sino que se generaran dos distintos: uno explicará las variaciones de la riqueza a partir del ambiente, mientras el otro lo hará a partir de las condiciones intrínsecas de la comunidad. Debido a la falta de linealidad de la salinidad se utiliza un polinomio de grado dos para este modelo.
+Dada la alta correlación entre las variables explicativas, se decide utilizar, por criterio de interés biológico, a la salinidad superficial y al tamaño inverso de partículas. Como estas dos presentan una correlación, no son utilizados en el mismo modelo, sino que se generan dos distintos: uno explica las variaciones de la riqueza a partir de las condiciones ambientales, mientras que el otro lo hace a partir de las condiciones intrínsecas de la comunidad. Debido a la falta de linealidad de la salinidad se utiliza un polinomio de grado dos para este modelo.
 :::
 
 ```{r}
@@ -354,7 +352,7 @@ kable(results_table,
 
 ```
 
-Se puede observar como al combinar ambos modelos el AIC disminuye, por ende se analizó la salinidad superficial y el gamma de forma independiente por un interés biológico.
+Se puede observar como al combinar ambos modelos el AIC disminuye, por ende se analiza la salinidad superficial y el gamma de forma independiente por un interés biológico.
 
 ### Supuestos
 
@@ -407,7 +405,7 @@ confint(m_SSS2)
 confint(m_gamma)
 ```
 
-Para ambos modelos se encuentra que los estimadores son significativamente distintos de cero (p \< 0.05) y que poseen un Phi de covarianza muy bajo, cercano a cero. Sin embargo se decidió dejar la matriz de covarianzas ya que presentan mejor AIC que los mismos modelos sin considerarla.
+Para ambos modelos se encuentra que los estimadores son significativamente distintos de cero (p \< 0.05) y que poseen un Phi de covarianza muy bajo, cercano a cero. Sin embargo se decidie dejar la matriz de covarianzas ya que presentan un menor AIC que los mismos modelos sin considerarla.
 
 #### Ecuación estimada de la riqueza en función del tamaño de partículas inverso:
 
@@ -461,16 +459,16 @@ plot(pred_gamma )+
 ## Discusión y conclusiones
 
 ::: justify
-Se observó que existe una relación, tanto entre la salinidad como con el tamaño de los organismos, con la riqueza de plancton de la misma.
+Se observa que existe una relación, tanto entre la salinidad como con el tamaño de los organismos, con la riqueza de plancton de la misma.
 
-Por un lado, se notó que el número de especies varía según el polinomio cuadrado de la salinidad (UPS) (p\<0.05), con un mínimo en 33.61 UPS y presentando el máximo de número de taxones en aguas poco salobres, relacionadas con aguas internas de la plataforma.
+Por un lado, se nota que el número de especies varía según el polinomio cuadrado de la salinidad (UPS) (p\<0.05), con un mínimo en 33.61 UPS y presentando el máximo de número de taxones en aguas poco salobres, relacionadas con aguas internas de la plataforma.
 
-Además, la cantidad de taxones disminuyó linealmente a menores tamaños de organismos, cayendo en promedio 6.748 números de taxones por unidad de gamma. 
+Además, la cantidad de taxones disminuye linealmente a menores tamaños de organismos, cayendo en promedio 6.748 números de taxones por unidad de gamma. 
 
 De esta manera, se puede concluir que las comunidades presentes en las aguas internas de la plataforma continental poseerán una mayor riqueza, asociada a una menor salinidad y organismos más grandes; frente a las comunidades del talud, las cuales poseerán un menor número de taxones. 
 :::
 
-## Biblografia 
+## Biblografia
 
 Falkowski, P. G., Fenchel, T., & Delong, E. F. (2008). The microbial engines that drive Earth's biogeochemical cycles. Science, 320(5879), 1034-1039.
 

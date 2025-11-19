@@ -43,28 +43,14 @@
 \setlength{\emergencystretch}{3em} % prevent overfull lines
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
 % Make \paragraph and \subparagraph free-standing
-\makeatletter
 \ifx\paragraph\undefined\else
   \let\oldparagraph\paragraph
-  \renewcommand{\paragraph}{
-    \@ifstar
-      \xxxParagraphStar
-      \xxxParagraphNoStar
-  }
-  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
-  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
 \fi
 \ifx\subparagraph\undefined\else
   \let\oldsubparagraph\subparagraph
-  \renewcommand{\subparagraph}{
-    \@ifstar
-      \xxxSubParagraphStar
-      \xxxSubParagraphNoStar
-  }
-  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
-  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
 \fi
-\makeatother
 
 \usepackage{color}
 \usepackage{fancyvrb}
@@ -84,7 +70,7 @@
 \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
 \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
 \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
-\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
 \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
 \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
 \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
@@ -94,7 +80,7 @@
 \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.28,0.35,0.67}{#1}}
 \newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.46,0.62}{#1}}
 \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
-\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
 \newcommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
 \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
 \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
@@ -120,17 +106,15 @@
 \makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
-\newsavebox\pandoc@box
-\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
-  \sbox\pandoc@box{#1}%
-  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
-  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
-  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
-  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
-  \else\usebox{\pandoc@box}%
-  \fi%
-}
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 % Set default figure placement to htbp
+\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 
@@ -176,7 +160,9 @@
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
-
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
 \usepackage{bookmark}
 
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
@@ -191,7 +177,6 @@
   urlcolor={Blue},
   pdfcreator={LaTeX via pandoc}}
 
-
 \title{Estudio de alta frecuencia de la riqueza del plancton microbiano
 en el Atlántico Sudoccidental Sur}
 \author{Nicolás Del Gobbo, Simón Rubinstein, Nicole Fabre, Gonzalo
@@ -200,7 +185,6 @@ Coccolo, Martina Cortez}
 
 \begin{document}
 \maketitle
-
 
 \subsection{}\label{section}
 
@@ -324,7 +308,7 @@ coordenadas geográficas del velero.
 
 Los registros de temperatura y salinidad fueron obtenidos mediante un
 termosalinógrafo instalado a bordo, y las estimaciones de concentración
-de clorofila ``a'' fueron obtenidas por un fluorómetro.
+de clorofila fueron obtenidas por un fluorómetro.
 
 Las mediciones semicontinuas consistieron en observaciones de grupos
 planctónicos a través de un sistema que combina microfluídica y
@@ -348,12 +332,12 @@ presentando una cota inferior pero no superior, se propone que sigue una
 distribución de probabilidades de tipo Poisson.
 
 Como los datos se toman en una serie espacial, no se puede asumir
-independencia entre las muestras. Por ende abordaremos un modelo
-marginal con un diseño de medidas repetidas en el \textbf{espacio},
-donde la falta de independencia de los datos con una matriz de
-covarianzas. Este es un modelo generalizado lineal, ya que la variable
-respuesta tiene una distribución Poisson y se usan medidas repetidas
-(GEE).
+independencia entre las muestras. Por ende, se abordarán mediante un
+modelo marginal con un diseño de medidas repetidas en el
+\textbf{espacio}, donde la falta de independencia de los datos con una
+matriz de covarianzas. Este es un modelo generalizado lineal, ya que la
+variable respuesta tiene una distribución Poisson y se usan medidas
+repetidas (GEE).
 
 \[
 \begin{gather}
@@ -363,7 +347,7 @@ respuesta tiene una distribución Poisson y se usan medidas repetidas
 \]
 
 Como en GEE no existe una matriz de correlación continua de distancias,
-asumimos una autroregresiva de orden uno, debido a que las distancias
+se asume una autroregresiva de orden uno, debido a que las distancias
 entre los puntos se mantienen relativamente constantes.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
@@ -372,9 +356,8 @@ entre los puntos se mantienen relativamente constantes.
 
 \subsubsection{Transformación datos}\label{transformaciuxf3n-datos}
 
-Para comenzar, se pasaron las latitudes y longitudes a distancias,
-tomando un punto de cada fuente como referencia y renombramos los
-frentes.
+Para comenzar, se pasan las latitudes y longitudes a distancias, tomando
+un punto de cada fuente como referencia y se renombran los frentes.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -442,7 +425,7 @@ Datos}\label{analisis-exploratorio-datos}
 \paragraph{Analiticamente}\label{analiticamente}
 
 Se realiza un resumen de las variables explicativas por cada frente,
-observando las medias y la cantidad de muestras en cada una.
+donde se observan las medias y la cantidad de muestras en cada una.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -465,15 +448,15 @@ observando las medias y la cantidad de muestras en cada una.
 \end{Shaded}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1500}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.0375}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1000}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1250}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1125}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1125}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1250}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1125}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1250}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.1500}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.0375}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.1000}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.1250}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.1125}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.1125}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.1250}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.1125}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.1250}}@{}}
 \caption{Medidas resumen por frente}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
@@ -558,29 +541,29 @@ respuesta, separando para cada frente.
 \begin{figure}
 
 \begin{minipage}{0.50\linewidth}
-\pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/explorativos-1.pdf}}\end{minipage}%
+\includegraphics{Tp_entregar_files/figure-pdf/explorativos-1.pdf}\end{minipage}%
 %
 \begin{minipage}{0.50\linewidth}
-\pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/explorativos-2.pdf}}\end{minipage}%
+\includegraphics{Tp_entregar_files/figure-pdf/explorativos-2.pdf}\end{minipage}%
 \newline
 \begin{minipage}{0.50\linewidth}
-\pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/explorativos-3.pdf}}\end{minipage}%
+\includegraphics{Tp_entregar_files/figure-pdf/explorativos-3.pdf}\end{minipage}%
 %
 \begin{minipage}{0.50\linewidth}
-\pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/explorativos-4.pdf}}\end{minipage}%
+\includegraphics{Tp_entregar_files/figure-pdf/explorativos-4.pdf}\end{minipage}%
 \newline
 \begin{minipage}{0.50\linewidth}
-\pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/explorativos-5.pdf}}\end{minipage}%
+\includegraphics{Tp_entregar_files/figure-pdf/explorativos-5.pdf}\end{minipage}%
 %
 \begin{minipage}{0.50\linewidth}
-\pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/explorativos-6.pdf}}\end{minipage}%
+\includegraphics{Tp_entregar_files/figure-pdf/explorativos-6.pdf}\end{minipage}%
 
 \end{figure}%
 
 \paragraph{Correlacion}\label{correlacion}
 
 Como las variables medidas se esperan que estén correlacionadas, se
-realizó un gráfico de correlación para evaluar la misma, separando por
+realiza un gráfico de correlación para evaluar la misma, separando por
 cada frente.
 
 \begin{Shaded}
@@ -590,7 +573,7 @@ cada frente.
 \end{Highlighting}
 \end{Shaded}
 
-\pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/unnamed-chunk-6-1.pdf}}
+\includegraphics{Tp_entregar_files/figure-pdf/unnamed-chunk-6-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -617,22 +600,24 @@ cada frente.
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Chl & 1.184410e+14 \\
-SSS & 1.132750e+13 \\
-source & 1.135208e+15 \\
-gamma & 2.425235e+15 \\
-bbp & -6.744785e+12 \\
-POC & 1.005204e+14 \\
-SST & 1.478070e+13 \\
+Chl & 8.470345e+13 \\
+SSS & -6.778578e+12 \\
+source & -9.065854e+14 \\
+gamma & -1.795224e+15 \\
+bbp & 8.069086e+12 \\
+POC & -1.004700e+14 \\
+SST & -5.986265e+10 \\
 \end{longtable}
 
-A partir de esto se observa una alta correlación entre las variables
+A partir de esto, se observa una alta correlación entre las variables
 explicativas, por lo que es necesario realizar una selección criteriosa
-de los modelos.
+de las variables explicativas a utilizar y los consiguientes modelos
+propuestos.
 
 \paragraph{Modelo}\label{modelo}
 
-Para comenzar se realiza un modelo con todas las variables explicativas.
+Para comenzar, se realiza un modelo inicial con todas las variables
+explicativas.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -650,7 +635,8 @@ Para comenzar se realiza un modelo con todas las variables explicativas.
 \paragraph{Dispersion}\label{dispersion}
 
 Se verifica la ausencia de sobre o subdispersión de los residuos de
-pearson.
+pearson, mediante un testeo de los residuos simulados utilizando el
+paquete DHARMa.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -673,15 +659,15 @@ alternative hypothesis: two.sided
 \end{Highlighting}
 \end{Shaded}
 
-\pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/unnamed-chunk-8-1.pdf}}
+\includegraphics{Tp_entregar_files/figure-pdf/unnamed-chunk-8-1.pdf}
 
 Se observa subdipersion de los residuos, por lo que debe ser modelada
 con una distribución como Conway-Maxwell-Poisson para evitar sobrestimar
 los errores estándars.
 
 Sin embargo, la librería GEE no presenta alternativas para la familia
-Poisson que corrijan la subdispersion ( la documentación dice la
-existencia de quasiPoisson pero no se logró que funcione) por lo que se
+Poisson que corrijan la subdispersion (si bien la documentación afirma
+la existencia de quasiPoisson, no se logra que funcione) por lo que se
 descarta la posibilidad de modelar la subdispersión.
 
 Ante este problema, se decide asumir que la distribución de
@@ -703,28 +689,27 @@ Normal}\label{modelo-riqueza-normal}
 \]
 
 Como en Poisson mayor media equivale a mayor varianza, la
-homocedasticidad es problemática al convertirlo en Normal. Sin embaro,
-se encuentra que estimando una varianza para cada frente soluciona la
-falta de homocedasticidad. Se utilizó la función var Ident para el
-modelado de la varianza.
+homocedasticidad es problemática al convertirlo en una distribución
+normal. Sin embaro, se encuentra que estimando una varianza para cada
+frente soluciona la falta de homocedasticidad. Para esto, se utiliza la
+función varIdent así modelando la varianza.
 
-Asimismo se probaron var Power y var Exp pero los resultados no fueron
-satisfactorios debido a que no corrigen la heterocedasticidad. Además,
-el modelado de varianza por var Ident no presenta un aumento
-significativo de cantidad de parámetros estimados en comparación a los
-otros.
-
-\section{VER de agregar var Power y var
-Exp}\label{ver-de-agregar-var-power-y-var-exp}
+Por otro lado, se probaron las funciones de modelado var Power y var Exp
+pero los resultados no fueron satisfactorios debido a que no se pudo
+corregir la heterocedasticidad. Además, el modelado de varianza por var
+Ident no presenta un aumento significativo de cantidad de parámetros
+estimados en comparación a los otros (las tres funciones de modelado de
+varianza aumentan en uno la cantidad de parametros estimados, frente a
+sin modelar).
 
 \paragraph{Seleccion de modelos}\label{seleccion-de-modelos}
 
-Dada la alta correlación entre las variables explicativas, se decide por
-criterio de interés biológico seleccionar a la salinidad superficial y
-el Tamaño inverso de partículas. Como estas dos presentan una
-correlación entre ellas, no serán utilizados en el mismo modelo, sino
-que se generaran dos distintos: uno explicará las variaciones de la
-riqueza a partir del ambiente, mientras el otro lo hará a partir de las
+Dada la alta correlación entre las variables explicativas, se decide
+utilizar, por criterio de interés biológico, a la salinidad superficial
+y al tamaño inverso de partículas. Como estas dos presentan una
+correlación, no son utilizados en el mismo modelo, sino que se generan
+dos distintos: uno explica las variaciones de la riqueza a partir de las
+condiciones ambientales, mientras que el otro lo hace a partir de las
 condiciones intrínsecas de la comunidad. Debido a la falta de linealidad
 de la salinidad se utiliza un polinomio de grado dos para este modelo.
 
@@ -819,7 +804,7 @@ SSS\^{}2 + Gamma.Phi & 0 & 4.727 & 392.939 & 408.778 & 0.055 \\
 \end{longtable}
 
 Se puede observar como al combinar ambos modelos el AIC disminuye, por
-ende se analizó la salinidad superficial y el gamma de forma
+ende se analiza la salinidad superficial y el gamma de forma
 independiente por un interés biológico.
 
 \subsubsection{Supuestos}\label{supuestos-1}
@@ -832,8 +817,15 @@ independencia de los datos con el gráfico ACF.
 \begin{Shaded}
 \begin{Highlighting}[]
 \FunctionTok{library}\NormalTok{(performance)}
+\end{Highlighting}
+\end{Shaded}
 
+\begin{verbatim}
+Warning: package 'performance' was built under R version 4.5.1
+\end{verbatim}
 
+\begin{Shaded}
+\begin{Highlighting}[]
 \NormalTok{model\_names }\OtherTok{\textless{}{-}} \FunctionTok{names}\NormalTok{(modelos)}
 
 \ControlFlowTok{for}\NormalTok{ (current\_name }\ControlFlowTok{in}\NormalTok{ model\_names) \{}
@@ -910,7 +902,7 @@ W = 0.97955, p-value = 0.2658
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-1.pdf}}
+{\centering \includegraphics{Tp_entregar_files/figure-pdf/alternativo-1.pdf}
 
 }
 
@@ -924,7 +916,7 @@ W = 0.97955, p-value = 0.2658
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-2.pdf}}
+{\centering \includegraphics{Tp_entregar_files/figure-pdf/alternativo-2.pdf}
 
 }
 
@@ -942,7 +934,7 @@ autoregresiva de orden 1.}
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-3.pdf}}
+{\centering \includegraphics{Tp_entregar_files/figure-pdf/alternativo-3.pdf}
 
 }
 
@@ -957,7 +949,7 @@ teóricos.}
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-4.pdf}}
+{\centering \includegraphics{Tp_entregar_files/figure-pdf/alternativo-4.pdf}
 
 }
 
@@ -971,7 +963,7 @@ teóricos.}
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-5.pdf}}
+{\centering \includegraphics{Tp_entregar_files/figure-pdf/alternativo-5.pdf}
 
 }
 
@@ -989,7 +981,7 @@ autoregresiva de orden 1.}
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-6.pdf}}
+{\centering \includegraphics{Tp_entregar_files/figure-pdf/alternativo-6.pdf}
 
 }
 
@@ -1004,7 +996,7 @@ teóricos.}
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-7.pdf}}
+{\centering \includegraphics{Tp_entregar_files/figure-pdf/alternativo-7.pdf}
 
 }
 
@@ -1018,7 +1010,7 @@ teóricos.}
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-8.pdf}}
+{\centering \includegraphics{Tp_entregar_files/figure-pdf/alternativo-8.pdf}
 
 }
 
@@ -1036,7 +1028,7 @@ autoregresiva de orden 1.}
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-9.pdf}}
+{\centering \includegraphics{Tp_entregar_files/figure-pdf/alternativo-9.pdf}
 
 }
 
@@ -1051,7 +1043,7 @@ teóricos.}
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-10.pdf}}
+{\centering \includegraphics{Tp_entregar_files/figure-pdf/alternativo-10.pdf}
 
 }
 
@@ -1065,7 +1057,7 @@ teóricos.}
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-11.pdf}}
+{\centering \includegraphics{Tp_entregar_files/figure-pdf/alternativo-11.pdf}
 
 }
 
@@ -1083,7 +1075,7 @@ autoregresiva de orden 1.}
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/alternativo-12.pdf}}
+{\centering \includegraphics{Tp_entregar_files/figure-pdf/alternativo-12.pdf}
 
 }
 
@@ -1214,9 +1206,9 @@ gamma       -8.987029 -4.50942
 
 Para ambos modelos se encuentra que los estimadores son
 significativamente distintos de cero (p \textless{} 0.05) y que poseen
-un Phi de covarianza muy bajo, cercano a cero. Sin embargo se decidió
-dejar la matriz de covarianzas ya que presentan mejor AIC que los mismos
-modelos sin considerarla.
+un Phi de covarianza muy bajo, cercano a cero. Sin embargo se decidie
+dejar la matriz de covarianzas ya que presentan un menor AIC que los
+mismos modelos sin considerarla.
 
 \paragraph{Ecuación estimada de la riqueza en función del tamaño de
 partículas
@@ -1244,8 +1236,15 @@ altas salinidades.
 \begin{Shaded}
 \begin{Highlighting}[]
 \FunctionTok{library}\NormalTok{(ggeffects)}
+\end{Highlighting}
+\end{Shaded}
 
+\begin{verbatim}
+Warning: package 'ggeffects' was built under R version 4.5.1
+\end{verbatim}
 
+\begin{Shaded}
+\begin{Highlighting}[]
 \NormalTok{pred\_salinidad }\OtherTok{\textless{}{-}} \FunctionTok{ggpredict}\NormalTok{(}\FunctionTok{update}\NormalTok{(m\_SSS2,}\AttributeTok{correlation =} \ConstantTok{NULL}\NormalTok{), }\AttributeTok{terms =} \FunctionTok{c}\NormalTok{(}\StringTok{"SSS [all]"}\NormalTok{))}
 \FunctionTok{plot}\NormalTok{(pred\_salinidad )}\SpecialCharTok{+}
   \FunctionTok{labs}\NormalTok{(}
@@ -1257,7 +1256,7 @@ altas salinidades.
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/unnamed-chunk-12-1.pdf}}
+{\centering \includegraphics{Tp_entregar_files/figure-pdf/unnamed-chunk-12-1.pdf}
 
 }
 
@@ -1285,7 +1284,7 @@ confianza.
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Tp_entregar_files/figure-pdf/unnamed-chunk-13-1.pdf}}
+{\centering \includegraphics{Tp_entregar_files/figure-pdf/unnamed-chunk-13-1.pdf}
 
 }
 
@@ -1297,15 +1296,15 @@ de confianza (95\%), representada con las regiones sombreadas.}
 
 \subsection{Discusión y conclusiones}\label{discusiuxf3n-y-conclusiones}
 
-Se observó que existe una relación, tanto entre la salinidad como con el
+Se observa que existe una relación, tanto entre la salinidad como con el
 tamaño de los organismos, con la riqueza de plancton de la misma.
 
-Por un lado, se notó que el número de especies varía según el polinomio
+Por un lado, se nota que el número de especies varía según el polinomio
 cuadrado de la salinidad (UPS) (p\textless0.05), con un mínimo en 33.61
 UPS y presentando el máximo de número de taxones en aguas poco salobres,
 relacionadas con aguas internas de la plataforma.
 
-Además, la cantidad de taxones disminuyó linealmente a menores tamaños
+Además, la cantidad de taxones disminuye linealmente a menores tamaños
 de organismos, cayendo en promedio 6.748 números de taxones por unidad
 de gamma.~
 
@@ -1351,8 +1350,7 @@ Romero, S. I., Piola, A. R., Charo, M., \& Garcia, C. A. E. (2006).
 Chlorophyll‐a variability off Patagonia based on SeaWiFS data. Journal
 of Geophysical Research: Oceans, 111(C5).
 
-\pandocbounded{\includegraphics[keepaspectratio]{images/dharma.jpeg}}
-
+\includegraphics{images/dharma.jpeg}
 
 
 
